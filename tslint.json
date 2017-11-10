@@ -1,4 +1,5 @@
 {
+  "defaultSeverity": "warn",
   "rules": {
     "class-name": true,
     "comment-format": [
