@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"target": "ES6",
+		"module": "es6",
+		"sourceMap": true,
+		"outDir": "js",
+		"types": [],
+		"strictNullChecks": true
+	},
+	"include": [
+		"src/**/*"
+	]
+}

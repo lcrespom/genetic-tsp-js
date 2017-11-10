@@ -1,0 +1,25 @@
+{
+  "name": "genetic-tsp-js",
+  "version": "1.0.0",
+  "description": "Genetic Engine solving the Traveling Salesman Problem",
+  "main": "js/engine.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --env.target=PROD",
+    "dev": "webpack-dev-server --env.target=DEV --content-base web/"
+  },
+  "keywords": [
+    "genetic",
+    "tsp"
+  ],
+  "author": "Luis Crespo",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-loader": "^3.1.1",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1",
+    "uglifyjs-webpack-plugin": "^1.0.1",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
+  }
+}
