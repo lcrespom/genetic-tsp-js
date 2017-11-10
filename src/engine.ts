@@ -1,3 +1,4 @@
+// ----- Engine Parameters -----
 interface EngineParams {
 	population: number
 	// Elite should be as small as possible
@@ -9,6 +10,7 @@ interface EngineParams {
 }
 
 
+// ----- A solution is an individual of the population -----
 abstract class Solution {
 
 	static compareTo(s1: Solution, s2: Solution): number {
@@ -18,11 +20,14 @@ abstract class Solution {
 		return 0
 	}
 
+	abstract equals(other: Solution): boolean
 	abstract evaluate(): number
 	abstract combine(other: Solution): Solution[]
 	abstract invert(): Solution
 }
 
+
+// ----- A population is a set of solutions for a given generation -----
 class Population {
 	solutions: Solution[]
 	weights: number[]
@@ -81,13 +86,84 @@ class Population {
 	}
 }
 
+// ----- The engine listener gets notified when a new generation is created -----
 interface EngineListener {
 	engineStep(pop: Population, generationCount: number): void
 }
 
-class Engine {
+
+// ----- The engine iterates through generations to optimize a solution -----
+abstract class Engine {
 	params: EngineParams
 	stop = false
 	generation: Population
 	listener: EngineListener
+
+	constructor(params: EngineParams) {
+		this.params = params
+	}
+
+	run(): void {
+		let generationCount = 0
+		this.generation = this.randomize()
+		this.generation.prepareForSelection()
+		while (!this.stop) {
+			this.step()
+			generationCount++
+			this.fireStepEvent(this.generation, generationCount)
+		}
+	}
+
+	setListener(listener: EngineListener): void {
+		this.listener = listener
+	}
+
+	abstract newSolution():  Solution
+
+	// -------------------------- Privates --------------------------
+
+	private step(): void {
+		let newGen = new Population(this.params)
+		this.copyElite(this.generation, newGen)
+		this.generation = this.combine(this.generation, newGen)
+		while (this.generation.size() < this.params.population)
+		this.generation.add(this.newSolution())
+		this.generation.prepareForSelection()
+	}
+
+	private copyElite(oldGen: Population, newGen: Population): void {
+		oldGen.copySolutions(newGen, this.params.elite)
+	}
+
+	private combine(oldGen: Population, newGen: Population): Population {
+		let i = this.params.elite
+		let trials = 0
+		while (i < this.params.population && trials < this.params.population * 2) {
+			trials++
+			let father = this.generation.select()
+			let mother = this.generation.select()
+			if (father.equals(mother)) continue
+			if (Math.random() < this.params.invertRatio)
+				father = father.invert()
+			let children = father.combine(mother)
+			for (let child of children) {
+				if (newGen.hasClone(child)) continue
+				if (i < this.params.population) newGen.add(child)
+				i++
+			}
+		}
+		return newGen
+	}
+
+	private fireStepEvent(pop: Population, generationCount: number): void {
+		if (this.listener == null) return
+		this.listener.engineStep(pop, generationCount)
+	}
+
+	private randomize(): Population {
+		let generation = new Population(this.params)
+		for (let i = 0; i < this.params.population; i++)
+			generation.add(this.newSolution())
+		return generation
+	}
 }
