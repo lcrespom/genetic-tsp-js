@@ -68,14 +68,16 @@ export class TspSolution extends Solution {
 	eval: number
 	flags: boolean[]
 
-	constructor(map: CountryMap) {
+	constructor(map: CountryMap, initCities = true) {
 		super()
 		this.map = map
-		this.cities = fillArray(-1, map.numCities)
 		this.eval = Number.NEGATIVE_INFINITY
 		this.flags = fillArray(false, map.numCities)
-		this.permuteCities()
-		this.eval = this.calcTrip()
+		if (initCities) {
+			this.cities = fillArray(-1, map.numCities)
+			this.permuteCities()
+			this.eval = this.calcTrip()
+		}
 	}
 
 	evaluate(): number {
@@ -103,9 +105,9 @@ export class TspSolution extends Solution {
 	}
 
 	invert(): TspSolution {
-		let inverted = new TspSolution(this.map)
-		for (let i = 0; i < this.cities.length; i++)
-			inverted.cities[i] = this.cities[this.cities.length - i - 1]
+		let inverted = new TspSolution(this.map, false)
+		inverted.cities = this.cities.slice()
+		inverted.cities.reverse()
 		inverted.eval = this.eval
 		return inverted
 	}
