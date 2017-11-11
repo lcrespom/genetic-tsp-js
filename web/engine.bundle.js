@@ -72,8 +72,10 @@ module.exports = __webpack_require__(1);
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 // ----- A solution is an individual of the population -----
 class Solution {
     static compareTo(s1, s2) {
@@ -85,6 +87,8 @@ class Solution {
         return 0;
     }
 }
+/* harmony export (immutable) */ __webpack_exports__["Solution"] = Solution;
+
 // ----- A population is a set of solutions for a given generation -----
 class Population {
     constructor(params) {
@@ -131,6 +135,8 @@ class Population {
         newGen.solutions = this.solutions.slice();
     }
 }
+/* harmony export (immutable) */ __webpack_exports__["Population"] = Population;
+
 // ----- The engine iterates through generations to optimize a solution -----
 class Engine {
     constructor(params) {
@@ -196,6 +202,8 @@ class Engine {
         return generation;
     }
 }
+/* harmony export (immutable) */ __webpack_exports__["Engine"] = Engine;
+
 
 
 /***/ })

@@ -1,5 +1,5 @@
 // ----- Engine Parameters -----
-interface EngineParams {
+export interface EngineParams {
 	population: number
 	// Elite should be as small as possible
 	elite: number
@@ -11,7 +11,7 @@ interface EngineParams {
 
 
 // ----- A solution is an individual of the population -----
-abstract class Solution {
+export abstract class Solution {
 
 	static compareTo(s1: Solution, s2: Solution): number {
 		let ev1 = s1.evaluate(), ev2 = s2.evaluate()
@@ -28,7 +28,7 @@ abstract class Solution {
 
 
 // ----- A population is a set of solutions for a given generation -----
-class Population {
+export class Population {
 	solutions: Solution[]
 	weights: number[]
 	numSolutions: number
@@ -87,13 +87,13 @@ class Population {
 }
 
 // ----- The engine listener gets notified when a new generation is created -----
-interface EngineListener {
+export interface EngineListener {
 	engineStep(pop: Population, generationCount: number): void
 }
 
 
 // ----- The engine iterates through generations to optimize a solution -----
-abstract class Engine {
+export abstract class Engine {
 	params: EngineParams
 	stop = false
 	generation: Population
