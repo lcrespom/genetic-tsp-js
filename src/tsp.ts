@@ -1,11 +1,12 @@
 import { Solution, EngineParams, Engine } from './engine'
 
-interface TspParams extends EngineParams {
+
+export interface TspParams extends EngineParams {
 	numCities: number
 }
 
 
-class CountryMap {
+export class CountryMap {
 	numCities: number
 	distances: number[][]
 	cityX: number[]
@@ -16,7 +17,7 @@ class CountryMap {
 		this.cityX = []
 		this.cityY = []
 		this.initCities(this.cityX, this.cityY)
-		this.distances = fillArray([], numCities)
+		this.distances = fillArray(() => new Array(), numCities)
 		for (let i = 0; i < numCities; i++)
 			for (let j = 0; j < numCities; j++)
 				this.distances[i][j] = this.calcDistance(
@@ -33,7 +34,9 @@ class CountryMap {
 			let visited: boolean[] = []
 			let visit
 			for (let i = 0; i < this.numCities; i++) {
-				do visit = randomInt(149) + 1; while (visited[visit])
+				do {
+					visit = randomInt(149) + 1
+				} while (visited[visit])
 				visited[visit] = true
 				cityX[i] = 20 + (visit % 15) * 40 + randomInt(10)
 				cityY[i] = 30 + (visit / 15) * 40 + randomInt(10)
@@ -58,7 +61,7 @@ class CountryMap {
 }
 
 
-class TspSolution extends Solution {
+export class TspSolution extends Solution {
 
 	cities: number[]
 	map: CountryMap
@@ -183,21 +186,6 @@ class TspSolution extends Solution {
 
 }
 
-function fillArray<T>(v: T, count: number): Array<T> {
-	let a: Array<T> = []
-	for (let i = 0; i < count; i++)
-		a[i] = v
-	return a
-}
-
-function randomInt(max: number) {
-	return Math.floor(Math.random() * max)
-}
-
-function arraysEqual<T>(a1: Array<T>, a2: Array<T>): boolean {
-	return a1.length == a2.length && a1.every((v, i) => v === a2[i])
-}
-
 
 class TspEngine extends Engine {
 
@@ -212,4 +200,24 @@ class TspEngine extends Engine {
 		return new TspSolution(this.map)
 	}
 
+}
+
+
+// -------------------- Utility functions --------------------
+
+type funk<T> = () => T
+
+function fillArray<T>(vf: T | funk<T>, count: number): Array<T> {
+	let a: Array<T> = []
+	for (let i = 0; i < count; i++)
+		a[i] = vf instanceof Function ? vf() : vf
+	return a
+}
+
+function arraysEqual<T>(a1: Array<T>, a2: Array<T>): boolean {
+	return a1.length == a2.length && a1.every((v, i) => v === a2[i])
+}
+
+function randomInt(max: number) {
+	return Math.floor(Math.random() * max)
 }

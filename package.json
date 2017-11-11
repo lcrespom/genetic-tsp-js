@@ -4,7 +4,7 @@
   "description": "Genetic Engine solving the Traveling Salesman Problem",
   "main": "js/engine.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tsc --module commonjs && jest",
     "build": "webpack --env.target=PROD",
     "dev": "webpack-dev-server --env.target=DEV --content-base web/"
   },
@@ -15,6 +15,7 @@
   "author": "Luis Crespo",
   "license": "ISC",
   "devDependencies": {
+    "jest-cli": "^21.2.1",
     "ts-loader": "^3.1.1",
     "tslint": "^5.8.0",
     "typescript": "^2.6.1",
