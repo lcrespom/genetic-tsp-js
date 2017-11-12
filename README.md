@@ -9,7 +9,7 @@ Another natural phenomenon worth imitating is evolution:
 - Natural evolution is based on natural selection to continuously improve a species to adapt to the environment.
 - Genetic Algorithms make use of artificial selection to continuously improve a solution to a problem that is otherwise too hard to solve.
 
-In natural evolution, each individual is expressed as a sequence of genes. Each  individual adapts better or worse to the environment. Sexual reproduction and mutations alter the sequences, resulting in variations of the original individuals that, combined with selection of the fittest, gradually become better adapted to the environment.
+In natural evolution, each individual of a species is determined by a sequence of genes. Each individual adapts better or worse to the environment. Sexual reproduction and mutations alter the sequences of the offspring, resulting in variations of the original individuals that, combined with natural selection of the fittest, gradually become better adapted to the environment.
 
 Genetic algorithms try to solve a problem by representing each solution as a sequence of symbols. The search for an optimal solution starts with a set of random sequences resulting in very bad solutions, then recombines them and selects the best ones for the next generation. The recombination process repeats over and over, and after each generation, the solutions get gradually closer to the optimal. There is no way of knowing whether a solution is the best possible one, so the process runs until the user decides that the best solution so far is good enough to stop, or until the process stabilizes and no new solution is found for a given number of generations.
 
