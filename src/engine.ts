@@ -49,13 +49,13 @@ export class Population {
 	prepareForSelection(): void {
 		this.solutions.sort(Solution.compareTo)
 		let max = this.solutions[this.solutions.length - 1].evaluate()
-		let totalWeight = 0
+		this.totalWeight = 0
 		for (let i = 0; i < this.numSolutions; i++) {
 			let weight = max - this.solutions[i].evaluate()
 			if (this.weightExponent != 1.0)
 				weight = Math.pow(weight, this.weightExponent)
-			totalWeight += weight
-			this.weights[i] = totalWeight
+			this.totalWeight += weight
+			this.weights[i] = this.totalWeight
 		}
 	}
 

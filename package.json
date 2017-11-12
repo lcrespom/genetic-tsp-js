@@ -6,7 +6,8 @@
   "scripts": {
     "test": "tsc --module commonjs && jest",
     "build": "webpack --env.target=PROD",
-    "dev": "webpack-dev-server --env.target=DEV --content-base web/"
+    "dev": "webpack --env.target=DEV",
+    "svr": "webpack-dev-server --env.target=DEV --content-base web/"
   },
   "keywords": [
     "genetic",

@@ -189,7 +189,7 @@ export class TspSolution extends Solution {
 }
 
 
-class TspEngine extends Engine {
+export class TspEngine extends Engine {
 
 	map: CountryMap
 

@@ -30,7 +30,7 @@ module.exports = function(env) {
 	return {
 		devtool: 'source-map',
 		entry: {
-			engine: ['./src/engine.ts'],
+			'tsp-cli': ['./src/tsp-cli.ts'],
 			//app2: ['./src/app2/main.ts']
 		},
 		resolve: {
@@ -46,7 +46,7 @@ module.exports = function(env) {
 		plugins,
 		output: {
 			path: path.resolve(__dirname, 'web'),
-			filename: '[name].bundle.js'
+			filename: '[name].js'
 		}
 	};
 }
