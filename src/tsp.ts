@@ -1,11 +1,12 @@
 import { Solution, EngineParams, Engine } from './engine'
 
-
+// ----- TSP Engine Parameters -----
 export interface TspParams extends EngineParams {
 	numCities: number
 }
 
 
+// ----- A map of cities and their respective distances -----
 export class CountryMap {
 	numCities: number
 	distances: number[][]
@@ -61,8 +62,8 @@ export class CountryMap {
 }
 
 
+// ----- A specific solution sequence for the TSP -----
 export class TspSolution extends Solution {
-
 	cities: number[]
 	map: CountryMap
 	eval: number
@@ -189,6 +190,7 @@ export class TspSolution extends Solution {
 }
 
 
+// ----- TSP Genetic Engine -----
 export class TspEngine extends Engine {
 
 	map: CountryMap
@@ -206,7 +208,6 @@ export class TspEngine extends Engine {
 
 
 // -------------------- Utility functions --------------------
-
 type funk<T> = () => T
 
 function fillArray<T>(vf: T | funk<T>, count: number): Array<T> {
