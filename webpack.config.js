@@ -31,7 +31,7 @@ module.exports = function(env) {
 		devtool: 'source-map',
 		entry: {
 			'tsp-cli': ['./src/tsp-cli.ts'],
-			//app2: ['./src/app2/main.ts']
+			'tsp-web': ['./src/tsp-web.ts']
 		},
 		resolve: {
 			extensions: ['.webpack.js', '.ts', '.js']
