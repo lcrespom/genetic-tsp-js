@@ -1,0 +1,48 @@
+<html>
+<head>
+	<title>Genetic engine</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<h2>Solving Traveling Salesman Problem through genetic algorithms</h2>
+<br/>
+
+<fieldset>
+	<legend>Status</legend>
+	<table style="width: 90%">
+		<tr>
+			<td class="label">Generation:</td>
+			<td class="value" id="status.generation"></td>
+			<td class="label">GPM:</td>
+			<td class="value" id="status.gpm"></td>
+		</tr>
+		<tr>
+			<td class="label">Incumbent evaluation:</td>
+			<td class="value" id="status.eval"></td>
+			<td class="label">Last incumbent generation:</td>
+			<td class="value" id="status.lastIncumbentGen"></td>
+		</tr>
+		<tr>
+			<td class="label">Elapsed time:</td>
+			<td class="value" id="status.elapsed"></td>
+			<td class="label">Last incumbent time:</td>
+			<td class="value" id="status.lastIncumbentWhen"></td>
+		</tr>
+	</table>
+</fieldset>
+
+<button id="start">Start</button>
+<br/><br/>
+
+<canvas id="canvas" width="640" height="480">
+Sorry, your browser is not good enough.
+Click <a href="/info">here</a> for a textual status.
+</canvas>
+
+<!--
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="canvas.js"></script>
+-->
+
+</body>
+</html>
