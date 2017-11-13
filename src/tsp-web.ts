@@ -1,9 +1,14 @@
+import { TspSolution, CountryMap } from './tsp'
+
 // ------------------------------ Drawing ------------------------------
 
 type Point = {
 	x: number
 	y: number
 }
+
+type Cities = Point[]
+
 
 function setupContext(): CanvasRenderingContext2D | null {
 	let canvas = <HTMLCanvasElement>document.getElementById('canvas')
@@ -17,12 +22,12 @@ function setupContext(): CanvasRenderingContext2D | null {
 	return ctx
 }
 
-function drawCities(ctx: CanvasRenderingContext2D, cities: Point[]) {
+function drawCities(ctx: CanvasRenderingContext2D, cities: Cities) {
 	for (let i = 0; i < cities.length; i++)
 		ctx.fillRect(cities[i].x - 4, cities[i].y - 4, 8, 8)
 }
 
-function drawPath(ctx: CanvasRenderingContext2D, cities: Point[], path: number[]) {
+function drawPath(ctx: CanvasRenderingContext2D, cities: Cities, path: number[]) {
 	let city
 	for (let i = 0; i < path.length; i++) {
 		city = cities[path[i]]
@@ -34,14 +39,22 @@ function drawPath(ctx: CanvasRenderingContext2D, cities: Point[], path: number[]
 	ctx.stroke()
 }
 
-export function drawSolution(cities: Point[], path: number[]) {
+function buildCities(map: CountryMap): Cities {
+	let cities: Cities = []
+	for (let i = 0; i < map.cityX.length; i++)
+		cities.push({ x: map.cityX[i], y: map.cityY[i] })
+	return cities
+}
+
+export function drawSolution(sol: TspSolution) {
+	let cities = buildCities(sol.map)
 	if (cities.length == 0) return
 	let ctx = setupContext()
 	if (!ctx) return
 	ctx.fillStyle = '#00f'
 	ctx.strokeStyle = '#000'
 	ctx.lineWidth = 2
-	drawPath(ctx, cities, path)
+	drawPath(ctx, cities, sol.cities)
 	drawCities(ctx, cities)
 }
 
@@ -87,8 +100,8 @@ but.addEventListener('click', evt => {
 	worker.postMessage({ command: 'start', params: {}})
 	worker.onmessage = msg => {
 		updateStatistics(msg.data)
-		if (msg.data.map && msg.data.incumbent)
-			drawSolution(msg.data.map, msg.data.incumbent.cities)
+		if (msg.data.incumbent)
+			drawSolution(msg.data.incumbent)
 	}
 	but.hidden = true
 })

@@ -35,8 +35,7 @@ const engineListener: EngineListener = {
 			lastIncumbentGen,
 			elapsed: now - startTime,
 			lastIncumbentWhen,
-			incumbent,
-			map: buildCities(incumbent.map)
+			incumbent
 		}
 		wkPostMessage(status)
 		lastGenct = genct
@@ -59,13 +58,6 @@ function initTSP(params): TspEngine {
 		weightExponent: 2.0
 	}
 	return new TspEngine(tspParams)
-}
-
-function buildCities(map: CountryMap) {
-	let cities = <any>[]
-	for (let i = 0; i < map.cityX.length; i++)
-		cities.push({ x: map.cityX[i], y: map.cityY[i] })
-	return cities
 }
 
 
