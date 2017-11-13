@@ -1,6 +1,11 @@
-import { Population } from './engine'
-import { TspEngine, TspParams, CountryMap } from './tsp'
+import { Population, EngineListener } from './engine'
+import { TspEngine, TspParams, CountryMap, TspSolution } from './tsp'
 
+let startTime = 0
+let lastGenct = 0
+let lastIncumbentGen = 0
+let lastIncumbentWhen = 0
+let lastEval = 0
 
 type WorkerPostMessage = (data: any) => void
 let wkPostMessage: WorkerPostMessage = <WorkerPostMessage>postMessage
@@ -12,26 +17,36 @@ self.onmessage = msg => {
 	}
 }
 
-function doStart(params) {
-	wkPostMessage('Potato')
-	let tsp = initTSP(params)
-	tsp.setListener({
-		engineStep(pop: Population, genct: number) {
-			if (!checkElapsed(500)) return
-			let incumbent = pop.getIncumbent()
-			let status = {
-				generation: genct,
-				gpm: -1,
-				eval: incumbent.evaluate(),
-				lastIncumbentGen: -1,
-				elapsed: -1,
-				lastIncumbentWhen: 0,
-				incumbent,
-				map: buildCities(tsp.map)
-			}
-			wkPostMessage(status)
+const engineListener: EngineListener = {
+	engineStep(pop: Population, genct: number) {
+		if (!checkElapsed(500)) return
+		let incumbent = <TspSolution>pop.getIncumbent()
+		let evl = incumbent.evaluate()
+		let now = Date.now()
+		if (evl != lastEval) {
+			lastEval = evl
+			lastIncumbentGen = genct
+			lastIncumbentWhen = now - startTime
 		}
-	})
+		let status = {
+			generation: genct,
+			gpm: ((genct - lastGenct) / 120).toFixed(2),	// TODO improve accuracy
+			eval: evl,
+			lastIncumbentGen,
+			elapsed: now - startTime,
+			lastIncumbentWhen,
+			incumbent,
+			map: buildCities(incumbent.map)
+		}
+		wkPostMessage(status)
+		lastGenct = genct
+	}
+}
+
+function doStart(params) {
+	let tsp = initTSP(params)
+	tsp.setListener(engineListener)
+	startTime = Date.now()
 	tsp.run()
 }
 
