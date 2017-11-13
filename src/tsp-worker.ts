@@ -2,6 +2,8 @@ import { Population, EngineListener } from './engine'
 import { TspEngine, TspParams, CountryMap, TspSolution } from './tsp'
 
 let startTime = 0
+let lastTime = 0
+let lastStepTime = Date.now()
 let lastGenct = 0
 let lastIncumbentGen = 0
 let lastIncumbentWhen = 0
@@ -23,6 +25,7 @@ const engineListener: EngineListener = {
 		let incumbent = <TspSolution>pop.getIncumbent()
 		let evl = incumbent.evaluate()
 		let now = Date.now()
+		let gpm = (genct - lastGenct) / (now - lastStepTime) * 1000 * 60
 		if (evl != lastEval) {
 			lastEval = evl
 			lastIncumbentGen = genct
@@ -30,7 +33,7 @@ const engineListener: EngineListener = {
 		}
 		let status = {
 			generation: genct,
-			gpm: (genct - lastGenct) * 120,	// TODO improve accuracy
+			gpm,
 			eval: evl,
 			lastIncumbentGen,
 			elapsed: now - startTime,
@@ -39,6 +42,7 @@ const engineListener: EngineListener = {
 		}
 		wkPostMessage(status)
 		lastGenct = genct
+		lastStepTime = now
 	}
 }
 
@@ -51,17 +55,15 @@ function doStart(params) {
 
 function initTSP(params): TspEngine {
 	let tspParams: TspParams = {
-		numCities: 200,
-		population: 50,
+		numCities: 100,
+		population: 200,
 		elite: 10,
-		invertRatio: 0.2,
+		invertRatio: 0.5,
 		weightExponent: 2.0
 	}
 	return new TspEngine(tspParams)
 }
 
-
-let lastTime = 0
 
 function checkElapsed(elapsed: number): boolean {
 	let now = Date.now()
