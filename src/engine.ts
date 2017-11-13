@@ -127,7 +127,7 @@ export abstract class Engine {
 		this.copyElite(this.generation, newGen)
 		this.generation = this.combine(this.generation, newGen)
 		while (this.generation.size() < this.params.population)
-		this.generation.add(this.newSolution())
+			this.generation.add(this.newSolution())
 		this.generation.prepareForSelection()
 	}
 
