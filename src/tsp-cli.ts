@@ -1,5 +1,5 @@
-import { Population } from './engine';
-import { TspEngine, TspParams } from './tsp';
+import { Population } from './engine'
+import { TspEngine, TspParams } from './tsp'
 
 
 let lastTime = 0

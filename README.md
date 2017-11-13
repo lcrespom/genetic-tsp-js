@@ -25,3 +25,8 @@ In order for a problem to be a good candidate to be solved using a genetic algor
 - It must have an evaluation function that provides a numeric score for each sequence, where better solutions correspond to better scores.
 
 The genetic engine will then use the evaluation function to select the best solutions of a given population in order to recombine their sequences and produce the new generation.
+
+## ToDo
+- Stop button
+- Editable parameters
+- Make canvas take window width

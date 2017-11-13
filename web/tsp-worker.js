@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -388,20 +388,70 @@ class Engine {
 
 
 /***/ }),
-/* 2 */
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(3);
+module.exports = __webpack_require__(7);
 
 
 /***/ }),
-/* 3 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tsp__ = __webpack_require__(0);
 
+let wkPostMessage = postMessage;
+self.onmessage = msg => {
+    switch (msg.data.command) {
+        case 'start': return doStart(msg.data.params);
+        default: throw Error('Unknown command: ' + msg.data.command);
+    }
+};
+function doStart(params) {
+    wkPostMessage('Potato');
+    let tsp = initTSP(params);
+    tsp.setListener({
+        engineStep(pop, genct) {
+            if (!checkElapsed(500))
+                return;
+            let incumbent = pop.getIncumbent();
+            let status = {
+                generation: genct,
+                gpm: -1,
+                eval: incumbent.evaluate(),
+                lastIncumbentGen: -1,
+                elapsed: -1,
+                lastIncumbentWhen: 0,
+                incumbent,
+                map: buildCities(tsp.map)
+            };
+            wkPostMessage(status);
+        }
+    });
+    tsp.run();
+}
+function initTSP(params) {
+    let tspParams = {
+        numCities: 200,
+        population: 50,
+        elite: 10,
+        invertRatio: 0.2,
+        weightExponent: 2.0
+    };
+    return new __WEBPACK_IMPORTED_MODULE_0__tsp__["a" /* TspEngine */](tspParams);
+}
+function buildCities(map) {
+    let cities = [];
+    for (let i = 0; i < map.cityX.length; i++)
+        cities.push({ x: map.cityX[i], y: map.cityY[i] });
+    return cities;
+}
 let lastTime = 0;
 function checkElapsed(elapsed) {
     let now = Date.now();
@@ -410,25 +460,8 @@ function checkElapsed(elapsed) {
     lastTime = now;
     return true;
 }
-let params = {
-    numCities: 200,
-    population: 50,
-    elite: 10,
-    invertRatio: 0.2,
-    weightExponent: 2.0
-};
-let tsp = new __WEBPACK_IMPORTED_MODULE_0__tsp__["a" /* TspEngine */](params);
-tsp.setListener({
-    engineStep(pop, genct) {
-        if (!checkElapsed(500))
-            return;
-        let evl = pop.getIncumbent().evaluate();
-        console.log(`Generation: ${genct} - Eval: ${evl.toFixed(2)}`);
-    }
-});
-tsp.run();
 
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=tsp-cli.js.map
+//# sourceMappingURL=tsp-worker.js.map

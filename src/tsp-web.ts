@@ -83,7 +83,13 @@ function updateStatistics(status) {
 
 let but = byId('start') || new HTMLElement()
 but.addEventListener('click', evt => {
-	console.log('Ready to rock!')
+	let worker = new Worker('tsp-worker.js')
+	worker.postMessage({ command: 'start', params: {}})
+	worker.onmessage = msg => {
+		updateStatistics(msg.data)
+		if (msg.data.map && msg.data.incumbent)
+			drawSolution(msg.data.map, msg.data.incumbent.cities)
+	}
 	but.hidden = true
 })
 
