@@ -84,7 +84,7 @@ function formatTime(t: number) {
 
 function updateStatistics(status) {
 	setText('status.generation', formatNum(status.generation))
-	setText('status.gpm', status.gpm.toFixed(2))
+	setText('status.gpm', status.gpm.toFixed(0))
 	setText('status.eval', formatNum(Math.round(status.eval)))
 	setText('status.lastIncumbentGen', formatNum(status.lastIncumbentGen))
 	setText('status.elapsed', formatTime(status.elapsed))

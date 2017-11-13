@@ -30,7 +30,7 @@ const engineListener: EngineListener = {
 		}
 		let status = {
 			generation: genct,
-			gpm: (genct - lastGenct) / 120,	// TODO improve accuracy
+			gpm: (genct - lastGenct) * 120,	// TODO improve accuracy
 			eval: evl,
 			lastIncumbentGen,
 			elapsed: now - startTime,

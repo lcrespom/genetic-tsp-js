@@ -129,7 +129,7 @@ export class TspSolution extends Solution {
 	}
 
 	private combineLeft(pos: number, mother: TspSolution, father: TspSolution): TspSolution {
-		let child = new TspSolution(this.map)
+		let child = new TspSolution(this.map, false)
 		// Copy left side of mother
 		child.cities = mother.cities.slice()
 		child.initFlags(mother.cities, 0, pos)
@@ -151,7 +151,7 @@ export class TspSolution extends Solution {
 	}
 
 	private combineRight(pos: number, mother: TspSolution, father: TspSolution): TspSolution {
-		let child = new TspSolution(this.map)
+		let child = new TspSolution(this.map, false)
 		// Copy right side of mother
 		child.cities = mother.cities.slice()
 		child.initFlags(mother.cities, pos, mother.cities.length)
