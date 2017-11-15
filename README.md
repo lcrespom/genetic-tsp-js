@@ -30,6 +30,3 @@ The genetic engine will then use the evaluation function to select the best solu
 - Stop button
 - Editable parameters
 - Make canvas take window width
-- Use random with seed, add seed to parameters
-	- See https://github.com/davidbau/seedrandom
-
