@@ -1,5 +1,4 @@
 import { Solution, EngineParams, Engine } from './engine'
-import { fillArray, typedArraysEqual } from './array-utils'
 
 // ----- TSP Engine Parameters -----
 export interface TspParams extends EngineParams {
@@ -65,7 +64,7 @@ export class CountryMap {
 
 // ----- A specific solution sequence for the TSP -----
 export class TspSolution extends Solution {
-	cities: Int16Array
+	cities: number[]
 	map: CountryMap
 	eval: number
 	flags: Int8Array
@@ -76,7 +75,7 @@ export class TspSolution extends Solution {
 		this.eval = Number.NEGATIVE_INFINITY
 		this.flags = new Int8Array(map.numCities)
 		if (initCities) {
-			this.cities = new Int16Array(map.numCities)
+			this.cities = fillArray(-1, map.numCities)
 			this.permuteCities()
 			this.eval = this.calcTrip()
 		}
@@ -103,7 +102,7 @@ export class TspSolution extends Solution {
 	equals(other: TspSolution): boolean {
 		if (this.eval != other.eval)
 			return false
-		return typedArraysEqual(this.cities, other.cities)
+		return arraysEqual(this.cities, other.cities)
 	}
 
 	invert(): TspSolution {
@@ -170,7 +169,7 @@ export class TspSolution extends Solution {
 		return child
 	}
 
-	private initFlags(cts: Int16Array, pos1: number, pos2: number): void {
+	private initFlags(cts: number[], pos1: number, pos2: number): void {
 		for (let i = pos1; i < pos2; i++)
 			this.flags[cts[i]] = 1
 	}
@@ -209,6 +208,19 @@ export class TspEngine extends Engine {
 
 
 // -------------------- Utility functions --------------------
+type funk<T> = () => T
+
+function fillArray<T>(vf: T | funk<T>, count: number): Array<T> {
+	let a: Array<T> = []
+	for (let i = 0; i < count; i++)
+		a[i] = vf instanceof Function ? vf() : vf
+	return a
+}
+
+function arraysEqual<T>(a1: Array<T>, a2: Array<T>): boolean {
+	return a1.length == a2.length && a1.every((v, i) => v === a2[i])
+}
+
 function randomInt(max: number) {
 	return Math.floor(Math.random() * max)
 }
