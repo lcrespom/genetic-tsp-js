@@ -46,7 +46,10 @@ export class Population {
 
 	add(sol: Solution): void {
 		this.solutions.push(sol)
-		this.evals['' + sol.evaluate()] = true
+		let k = '' + sol.evaluate()
+		if (!this.evals[k])
+			this.evals[k] = []
+		this.evals[k].push(sol)
 	}
 
 	prepareForSelection(): void {
@@ -79,7 +82,11 @@ export class Population {
 	}
 
 	hasClone(other: Solution): boolean {
-		return this.evals['' + other.evaluate()]
+		let candidates = this.evals['' + other.evaluate()]
+		if (!candidates) return false
+		for (let i = 0; i < candidates.length; i++)
+			if (other.equals(candidates[i])) return true
+		return false
 	}
 
 	copySolutions(newGen: Population, numSolutions: number): void {
