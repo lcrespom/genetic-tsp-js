@@ -27,8 +27,12 @@ In order for a problem to be a good candidate to be solved using a genetic algor
 The genetic engine will then use the evaluation function to select the best solutions of a given population in order to recombine their sequences and produce the new generation.
 
 ## ToDo
-- Stop button
-- Editable parameters
-- Make canvas take window width
-- Use random with seed, add seed to parameters
-	- See https://github.com/davidbau/seedrandom
+- Look & feel
+	- Use Bootstrap
+	- Make canvas take window width
+- Functionality
+	- Stop button
+	- Editable parameters
+	- Use random with seed, add seed to parameters
+		- See https://github.com/davidbau/seedrandom
+	- Support parallel engines / recombine in client
