@@ -55,10 +55,10 @@ function doStart(params) {
 
 function initTSP(params): TspEngine {
 	let tspParams: TspParams = {
-		numCities: 100,
-		population: 200,
+		numCities: 200,
+		population: 50,
 		elite: 10,
-		invertRatio: 0.5,
+		invertRatio: 0.2,
 		weightExponent: 2.0
 	}
 	return new TspEngine(tspParams)

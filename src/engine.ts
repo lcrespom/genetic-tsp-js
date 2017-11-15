@@ -82,7 +82,7 @@ export class Population {
 	}
 
 	copySolutions(newGen: Population, numSolutions: number): void {
-		newGen.solutions = this.solutions.slice()
+		newGen.solutions = this.solutions.slice(0, numSolutions)
 	}
 }
 
