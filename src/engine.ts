@@ -77,7 +77,7 @@ export class Population {
 
 	hasClone(other: Solution): boolean {
 		for (let i = 0; i < this.solutions.length; i++)
-			if (other.evaluate() == this.solutions[i].evaluate()) return true
+			if (other.equals(this.solutions[i])) return true
 		return false
 	}
 
