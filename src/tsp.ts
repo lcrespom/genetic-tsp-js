@@ -67,13 +67,13 @@ export class TspSolution extends Solution {
 	cities: number[]
 	map: CountryMap
 	eval: number
-	flags: boolean[]
+	flags: Int8Array
 
 	constructor(map: CountryMap, initCities = true) {
 		super()
 		this.map = map
 		this.eval = Number.NEGATIVE_INFINITY
-		this.flags = fillArray(false, map.numCities)
+		this.flags = new Int8Array(map.numCities)
 		if (initCities) {
 			this.cities = fillArray(-1, map.numCities)
 			this.permuteCities()
@@ -171,11 +171,11 @@ export class TspSolution extends Solution {
 
 	private initFlags(cts: number[], pos1: number, pos2: number): void {
 		for (let i = pos1; i < pos2; i++)
-			this.flags[cts[i]] = true
+			this.flags[cts[i]] = 1
 	}
 
 	private found(cityNum: number, pos1: number, pos2: number): boolean {
-		return this.flags[cityNum]
+		return this.flags[cityNum] != 0
 	}
 
 	private calcTrip(): number {
