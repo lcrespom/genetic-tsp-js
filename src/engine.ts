@@ -1,5 +1,3 @@
-import { doubleQuickSort } from "./array-utils";
-
 // ----- Engine Parameters -----
 export interface EngineParams {
 	population: number
@@ -48,7 +46,6 @@ export class Population {
 
 	add(sol: Solution): void {
 		this.solutions.push(sol)
-		// Update clone table
 		let k = '' + sol.evaluate()
 		if (!this.evals[k])
 			this.evals[k] = []
@@ -56,7 +53,7 @@ export class Population {
 	}
 
 	prepareForSelection(): void {
-		this.sortSolutions()
+		this.solutions.sort(Solution.compareTo)
 		let max = this.solutions[this.solutions.length - 1].evaluate()
 		this.totalWeight = 0
 		for (let i = 0; i < this.numSolutions; i++) {
@@ -66,20 +63,6 @@ export class Population {
 			this.totalWeight += weight
 			this.weights[i] = this.totalWeight
 		}
-	}
-
-	sortSolutions() {
-		this.solutions.sort(Solution.compareTo)
-		// let evals = new Float64Array(this.solutions.length)
-		// for (let i = 0; i < evals.length; i++)
-		// 	evals[i] = this.solutions[i].evaluate()
-		// let indexes = doubleQuickSort(evals)
-		// let newSolutions: Array<Solution> = []
-		// for (let i = 0; i < indexes.length; i++) {
-		// 	if (!this.solutions[indexes[i]]) debugger
-		// 	newSolutions.push(this.solutions[indexes[i]])
-		// }
-		// this.solutions = newSolutions
 	}
 
 	select(): Solution {
@@ -107,7 +90,7 @@ export class Population {
 	}
 
 	copySolutions(newGen: Population, numSolutions: number): void {
-		newGen.solutions = this.solutions.slice(0, numSolutions)
+		newGen.solutions = this.solutions.slice()
 	}
 }
 
