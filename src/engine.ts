@@ -34,19 +34,16 @@ export class Population {
 	numSolutions: number
 	totalWeight: number
 	weightExponent: number
-	evals: any
 
 	constructor(params: EngineParams) {
 		this.numSolutions = params.population
 		this.solutions = []
 		this.weights = []
 		this.weightExponent = params.weightExponent
-		this.evals = {}
 	}
 
 	add(sol: Solution): void {
 		this.solutions.push(sol)
-		this.evals['' + sol.evaluate()] = true
 	}
 
 	prepareForSelection(): void {
@@ -79,7 +76,9 @@ export class Population {
 	}
 
 	hasClone(other: Solution): boolean {
-		return this.evals['' + other.evaluate()]
+		for (let i = 0; i < this.solutions.length; i++)
+			if (other.evaluate() == this.solutions[i].evaluate()) return true
+		return false
 	}
 
 	copySolutions(newGen: Population, numSolutions: number): void {
