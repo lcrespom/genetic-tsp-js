@@ -1,5 +1,5 @@
 import { Solution, EngineParams, Engine } from './engine'
-import { typedArraysEqual } from './array-utils'
+import { fillArray, typedArraysEqual } from './array-utils'
 
 // ----- TSP Engine Parameters -----
 export interface TspParams extends EngineParams {
@@ -10,7 +10,7 @@ export interface TspParams extends EngineParams {
 // ----- A map of cities and their respective distances -----
 export class CountryMap {
 	numCities: number
-	distances: Float64Array[]
+	distances: number[][]
 	cityX: number[]
 	cityY: number[]
 
@@ -19,9 +19,7 @@ export class CountryMap {
 		this.cityX = []
 		this.cityY = []
 		this.initCities(this.cityX, this.cityY)
-		this.distances = []
-		for (let i = 0; i < numCities; i++)
-			this.distances.push(new Float64Array(numCities))
+		this.distances = fillArray(() => new Array(), numCities)
 		for (let i = 0; i < numCities; i++)
 			for (let j = 0; j < numCities; j++)
 				this.distances[i][j] = this.calcDistance(
