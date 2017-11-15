@@ -27,7 +27,7 @@ function drawCities(ctx: CanvasRenderingContext2D, cities: Cities) {
 		ctx.fillRect(cities[i].x - 4, cities[i].y - 4, 8, 8)
 }
 
-function drawPath(ctx: CanvasRenderingContext2D, cities: Cities, path: number[]) {
+function drawPath(ctx: CanvasRenderingContext2D, cities: Cities, path: Int16Array) {
 	let city
 	for (let i = 0; i < path.length; i++) {
 		city = cities[path[i]]
