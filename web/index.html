@@ -1,45 +1,132 @@
+<!doctype html>
 <html>
+
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>Genetic engine</title>
-	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+	<style>
+		.main {
+			max-width: 1024px;
+		}
+		.navbar-brand {
+			font-size: 150%;
+			padding-top: 2px;
+			padding-bottom: 2px;
+		}
+		legend {
+			border-bottom: 1px solid #e5e5e5;
+			margin-bottom: 20px;
+		}
+		.canvas-container {
+			width: 100%;
+			text-align:center;
+		}
+		#canvas {
+			border: 1px solid #CCC;
+			border-radius: 4px;
+		}
+	</style>
 </head>
+
 <body>
-<h2>Solving Traveling Salesman Problem through genetic algorithms</h2>
-<br/>
+	<nav class="navbar navbar-dark bg-dark">
+		<a class="navbar-brand mx-auto" href="#">Genetic TSP Solver</a>
+	</nav>
 
-<fieldset>
-	<legend>Status</legend>
-	<table style="width: 90%">
-		<tr>
-			<td class="label">Generation:</td>
-			<td class="value" id="status.generation"></td>
-			<td class="label">GPM:</td>
-			<td class="value" id="status.gpm"></td>
-		</tr>
-		<tr>
-			<td class="label">Incumbent evaluation:</td>
-			<td class="value" id="status.eval"></td>
-			<td class="label">Last incumbent generation:</td>
-			<td class="value" id="status.lastIncumbentGen"></td>
-		</tr>
-		<tr>
-			<td class="label">Elapsed time:</td>
-			<td class="value" id="status.elapsed"></td>
-			<td class="label">Last incumbent time:</td>
-			<td class="value" id="status.lastIncumbentWhen"></td>
-		</tr>
-	</table>
-</fieldset>
+	<div class="m-2">
+	<div class="mx-auto main">
+		<!-- -------------------- TSP Parameters -------------------- -->
+		<form>
+			<fieldset>
+				<legend>Parameters</legend>
+				<div class="form-group form-row">
+					<label for="params.ncities" class="col-sm-2 col-form-label text-md-right">Number of cities:</label>
+					<div class="col-sm-2">
+						<input id="params.ncities" type="number" min="10" class="form-control" value="200">
+					</div>
+					<label for="params.popsize" class="col-sm-2 col-form-label text-md-right">Population size:</label>
+					<div class="col-sm-2">
+						<input id="params.popsize" type="number" min="10" class="form-control" value="50">
+					</div>
+					<label for="params.nworkers" class="col-sm-2 col-form-label text-md-right">Paralellism:</label>
+					<div class="col-sm-2">
+						<input disabled id="params.nworkers" type="number" min="1" max="32" class="form-control" value="1">
+					</div>
+				</div>
+				<div class="form-group form-row">
+					<label for="params.elite" class="col-sm-2 col-form-label text-md-right">Elite size:</label>
+					<div class="col-sm-2">
+						<input id="params.elite" type="number" min="0" class="form-control" value="10">
+					</div>
+					<label for="params.invert" class="col-sm-2 col-form-label text-md-right">Invert ratio:</label>
+					<div class="col-sm-2">
+						<input id="params.invert" type="number" min="0" max="1" step="0.1" class="form-control" value="0.2">
+					</div>
+					<label for="params.exponent" class="col-sm-2 col-form-label text-md-right">Weight exponent:</label>
+					<div class="col-sm-2">
+						<input id="params.exponent" type="number" min="0" max="10" class="form-control" value="2">
+					</div>
+				</div>
+				<div class="form-group form-row">
+					<label for="params.seed" class="col-sm-2 col-form-label text-md-right">Random seed:</label>
+					<div class="col-sm-2">
+						<input disabled id="params.seed" type="text" class="form-control">
+					</div>
+					<div class="col-sm-8 text-right">
+						<button id="start" type="button" class="btn btn-primary">Start</button>
+					</div>
+				</div>
+			</fieldset>
 
-<button id="start">Start</button>
-<br/><br/>
+			<!-- -------------------- TSP Status -------------------- -->
+			<fieldset>
+				<legend>Status</legend>
+				<div class="form-group form-row">
+					<label for="status.elapsed" class="col-sm-2 col-form-label text-md-right">Elapsed time:</label>
+					<div class="col-sm-2">
+						<input id="status.elapsed" class="form-control" readonly>
+					</div>
+					<label for="status.generation" class="col-sm-2 col-form-label text-md-right">Generation:</label>
+					<div class="col-sm-2">
+						<input id="status.generation" class="form-control" readonly>
+					</div>
+					<label for="status.gpm" class="col-sm-2 col-form-label text-md-right">Generations/minute:</label>
+					<div class="col-sm-2">
+						<input id="status.gpm" class="form-control" readonly>
+					</div>
+				</div>
+				<div class="form-group form-row">
+					<label for="status.eval" class="col-sm-2 col-form-label text-md-right">Shortest distance:</label>
+					<div class="col-sm-2">
+						<input id="status.eval" class="form-control" readonly>
+					</div>
+					<label for="status.lastIncumbentGen" class="col-sm-2 col-form-label text-md-right">Last updated:</label>
+					<div class="col-sm-2">
+						<input id="status.lastIncumbentGen" class="form-control" readonly>
+					</div>
+					<label for="status.lastIncumbentWhen" class="col-sm-2 col-form-label text-md-right">Last update time:</label>
+					<div class="col-sm-2">
+						<input id="status.lastIncumbentWhen" class="form-control" readonly>
+					</div>
+				</div>
+			</fieldset>
 
-<canvas id="canvas" width="640" height="480">
-Sorry, your browser is not good enough.
-Click <a href="/info">here</a> for a textual status.
-</canvas>
+			<!-- -------------------- Map -------------------- -->
+			<fieldset>
+				<legend>Map</legend>
+				<div class="canvas-container">
+					<canvas id="canvas" width="640" height="480">
+					</canvas>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	</div>
 
-<script type="text/javascript" src="tsp-web.js"></script>
+	<script type="text/javascript" src="tsp-web.js"></script>
 
 </body>
+
 </html>

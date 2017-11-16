@@ -171,7 +171,7 @@ class TspSolution extends __WEBPACK_IMPORTED_MODULE_0__engine__["b" /* Solution 
         }
     }
     combineLeft(pos, mother, father) {
-        let child = new TspSolution(this.map);
+        let child = new TspSolution(this.map, false);
         // Copy left side of mother
         child.cities = mother.cities.slice();
         child.initFlags(mother.cities, 0, pos);
@@ -192,7 +192,7 @@ class TspSolution extends __WEBPACK_IMPORTED_MODULE_0__engine__["b" /* Solution 
         return child;
     }
     combineRight(pos, mother, father) {
-        let child = new TspSolution(this.map);
+        let child = new TspSolution(this.map, false);
         // Copy right side of mother
         child.cities = mother.cities.slice();
         child.initFlags(mother.cities, pos, mother.cities.length);
@@ -308,12 +308,12 @@ class Population {
     }
     hasClone(other) {
         for (let i = 0; i < this.solutions.length; i++)
-            if (other.evaluate() == this.solutions[i].evaluate())
+            if (other.equals(this.solutions[i]))
                 return true;
         return false;
     }
     copySolutions(newGen, numSolutions) {
-        newGen.solutions = this.solutions.slice();
+        newGen.solutions = this.solutions.slice(0, numSolutions);
     }
 }
 /* unused harmony export Population */
@@ -406,6 +406,14 @@ module.exports = __webpack_require__(7);
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__tsp__ = __webpack_require__(0);
 
+let startTime = 0;
+let lastTime = 0;
+let lastStepTime = Date.now();
+let lastGenct = 0;
+let lastIncumbentGen = 0;
+let lastIncumbentWhen = 0;
+let lastEval = 0;
+const REFRESH_WAIT = 250;
 let wkPostMessage = postMessage;
 self.onmessage = msg => {
     switch (msg.data.command) {
@@ -413,27 +421,37 @@ self.onmessage = msg => {
         default: throw Error('Unknown command: ' + msg.data.command);
     }
 };
-function doStart(params) {
-    wkPostMessage('Potato');
-    let tsp = initTSP(params);
-    tsp.setListener({
-        engineStep(pop, genct) {
-            if (!checkElapsed(500))
-                return;
-            let incumbent = pop.getIncumbent();
-            let status = {
-                generation: genct,
-                gpm: -1,
-                eval: incumbent.evaluate(),
-                lastIncumbentGen: -1,
-                elapsed: -1,
-                lastIncumbentWhen: 0,
-                incumbent,
-                map: buildCities(tsp.map)
-            };
-            wkPostMessage(status);
+const engineListener = {
+    engineStep(pop, genct) {
+        if (!checkElapsed(REFRESH_WAIT))
+            return;
+        let incumbent = pop.getIncumbent();
+        let evl = incumbent.evaluate();
+        let now = Date.now();
+        let gpm = (genct - lastGenct) / (now - lastStepTime) * 1000 * 60;
+        if (evl != lastEval) {
+            lastEval = evl;
+            lastIncumbentGen = genct;
+            lastIncumbentWhen = now - startTime;
         }
-    });
+        let status = {
+            generation: genct,
+            gpm,
+            eval: evl,
+            lastIncumbentGen,
+            elapsed: now - startTime,
+            lastIncumbentWhen,
+            incumbent
+        };
+        wkPostMessage(status);
+        lastGenct = genct;
+        lastStepTime = now;
+    }
+};
+function doStart(params) {
+    let tsp = initTSP(params);
+    tsp.setListener(engineListener);
+    startTime = Date.now();
     tsp.run();
 }
 function initTSP(params) {
@@ -446,13 +464,6 @@ function initTSP(params) {
     };
     return new __WEBPACK_IMPORTED_MODULE_0__tsp__["a" /* TspEngine */](tspParams);
 }
-function buildCities(map) {
-    let cities = [];
-    for (let i = 0; i < map.cityX.length; i++)
-        cities.push({ x: map.cityX[i], y: map.cityY[i] });
-    return cities;
-}
-let lastTime = 0;
 function checkElapsed(elapsed) {
     let now = Date.now();
     if (now - lastTime < elapsed)
