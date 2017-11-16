@@ -98,10 +98,13 @@ let but = byId('start') || new HTMLElement()
 but.addEventListener('click', evt => {
 	let worker = new Worker('tsp-worker.js')
 	worker.postMessage({ command: 'start', params: {}})
+	let lastEval = 0
 	worker.onmessage = msg => {
 		updateStatistics(msg.data)
-		if (msg.data.incumbent)
+		if (msg.data.incumbent && msg.data.eval != lastEval) {
 			drawSolution(msg.data.incumbent)
+			lastEval = msg.data.eval
+		}
 	}
 	but.hidden = true
 })

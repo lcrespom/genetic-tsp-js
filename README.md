@@ -29,7 +29,8 @@ The genetic engine will then use the evaluation function to select the best solu
 ## ToDo
 - Look & feel
 	- Use Bootstrap
-	- Make canvas take window width
+	- Center canvas
+	- Highlight the segments that changed in the map from previous solution
 - Functionality
 	- Stop button
 	- Editable parameters

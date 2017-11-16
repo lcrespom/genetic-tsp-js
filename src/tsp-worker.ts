@@ -8,6 +8,7 @@ let lastGenct = 0
 let lastIncumbentGen = 0
 let lastIncumbentWhen = 0
 let lastEval = 0
+const REFRESH_WAIT = 250
 
 type WorkerPostMessage = (data: any) => void
 let wkPostMessage: WorkerPostMessage = <WorkerPostMessage>postMessage
@@ -21,7 +22,7 @@ self.onmessage = msg => {
 
 const engineListener: EngineListener = {
 	engineStep(pop: Population, genct: number) {
-		if (!checkElapsed(500)) return
+		if (!checkElapsed(REFRESH_WAIT)) return
 		let incumbent = <TspSolution>pop.getIncumbent()
 		let evl = incumbent.evaluate()
 		let now = Date.now()
