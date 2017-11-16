@@ -26,6 +26,12 @@ In order for a problem to be a good candidate to be solved using a genetic algor
 
 The genetic engine will then use the evaluation function to select the best solutions of a given population in order to recombine their sequences and produce the new generation.
 
+## Building and testing
+This is a 100% client-side project. You can deploy the web folder anywhere you want and open it from your browser.
+- Run `npm run svr` to launch a development server in watch mode. You can then open http://localhost:8080 and play with the application.
+- Run `npm run dev` to build a development version, without minification.
+- Run `npm run build` to build a production version of the application.
+
 ## ToDo
 - Look & feel
 	- Use Bootstrap
