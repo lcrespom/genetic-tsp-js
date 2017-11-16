@@ -171,7 +171,7 @@ class TspSolution extends __WEBPACK_IMPORTED_MODULE_0__engine__["b" /* Solution 
         }
     }
     combineLeft(pos, mother, father) {
-        let child = new TspSolution(this.map);
+        let child = new TspSolution(this.map, false);
         // Copy left side of mother
         child.cities = mother.cities.slice();
         child.initFlags(mother.cities, 0, pos);
@@ -192,7 +192,7 @@ class TspSolution extends __WEBPACK_IMPORTED_MODULE_0__engine__["b" /* Solution 
         return child;
     }
     combineRight(pos, mother, father) {
-        let child = new TspSolution(this.map);
+        let child = new TspSolution(this.map, false);
         // Copy right side of mother
         child.cities = mother.cities.slice();
         child.initFlags(mother.cities, pos, mother.cities.length);
@@ -308,12 +308,12 @@ class Population {
     }
     hasClone(other) {
         for (let i = 0; i < this.solutions.length; i++)
-            if (other.evaluate() == this.solutions[i].evaluate())
+            if (other.equals(this.solutions[i]))
                 return true;
         return false;
     }
     copySolutions(newGen, numSolutions) {
-        newGen.solutions = this.solutions.slice();
+        newGen.solutions = this.solutions.slice(0, numSolutions);
     }
 }
 /* unused harmony export Population */

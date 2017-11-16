@@ -116,5 +116,8 @@ function byId(id: string): HTMLElement | null {
 function setText(id: string, txt: string) {
 	let elem = byId(id)
 	if (!elem) return
-	elem.innerText = txt
+	if (elem.tagName == 'INPUT')
+		(<HTMLInputElement>elem).value = txt
+	else
+		elem.innerText = txt
 }

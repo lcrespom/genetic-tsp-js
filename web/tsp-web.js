@@ -79,7 +79,6 @@ module.exports = __webpack_require__(5);
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony export (immutable) */ __webpack_exports__["drawSolution"] = drawSolution;
-// ------------------------------ Drawing ------------------------------
 function setupContext() {
     let canvas = document.getElementById('canvas');
     if (!canvas || !canvas.getContext)
@@ -108,7 +107,14 @@ function drawPath(ctx, cities, path) {
     ctx.lineTo(city.x, city.y);
     ctx.stroke();
 }
-function drawSolution(cities, path) {
+function buildCities(map) {
+    let cities = [];
+    for (let i = 0; i < map.cityX.length; i++)
+        cities.push({ x: map.cityX[i], y: map.cityY[i] });
+    return cities;
+}
+function drawSolution(sol) {
+    let cities = buildCities(sol.map);
     if (cities.length == 0)
         return;
     let ctx = setupContext();
@@ -117,7 +123,7 @@ function drawSolution(cities, path) {
     ctx.fillStyle = '#00f';
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 2;
-    drawPath(ctx, cities, path);
+    drawPath(ctx, cities, sol.cities);
     drawCities(ctx, cities);
 }
 // ------------------------------ Statistics ------------------------------
@@ -125,7 +131,7 @@ function formatNum(nStr) {
     nStr += '';
     let rgx = /(\d+)(\d{3})/;
     while (rgx.test(nStr))
-        nStr = nStr.replace(rgx, '$1' + '.' + '$2');
+        nStr = nStr.replace(rgx, '$1.$2');
     return nStr;
 }
 function prepend0(num) {
@@ -142,7 +148,7 @@ function formatTime(t) {
 }
 function updateStatistics(status) {
     setText('status.generation', formatNum(status.generation));
-    setText('status.gpm', formatNum(status.gpm));
+    setText('status.gpm', formatNum(status.gpm.toFixed(0)));
     setText('status.eval', formatNum(Math.round(status.eval)));
     setText('status.lastIncumbentGen', formatNum(status.lastIncumbentGen));
     setText('status.elapsed', formatTime(status.elapsed));
@@ -155,8 +161,8 @@ but.addEventListener('click', evt => {
     worker.postMessage({ command: 'start', params: {} });
     worker.onmessage = msg => {
         updateStatistics(msg.data);
-        if (msg.data.map && msg.data.incumbent)
-            drawSolution(msg.data.map, msg.data.incumbent.cities);
+        if (msg.data.incumbent)
+            drawSolution(msg.data.incumbent);
     };
     but.hidden = true;
 });
@@ -168,7 +174,10 @@ function setText(id, txt) {
     let elem = byId(id);
     if (!elem)
         return;
-    elem.innerText = txt;
+    if (elem.tagName == 'INPUT')
+        elem.value = txt;
+    else
+        elem.innerText = txt;
 }
 
 

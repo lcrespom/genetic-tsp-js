@@ -34,8 +34,8 @@ This is a 100% client-side project. You can deploy the web folder anywhere you w
 
 ## ToDo
 - Look & feel
-	- Use Bootstrap
-	- Make canvas take window width
+	- Use Bootstrap ✓
+	- ~~Make canvas take window width~~ (not nice)
 - Functionality
 	- Stop button
 	- Editable parameters
