@@ -1,8 +1,13 @@
 import { Solution, EngineParams, Engine } from './engine'
 
+declare function require(name: string)
+const seedrandom = require('seedrandom')
+
 // ----- TSP Engine Parameters -----
 export interface TspParams extends EngineParams {
 	numCities: number
+	mapSeed?: string
+	engineSeed?: string
 }
 
 
@@ -197,7 +202,12 @@ export class TspEngine extends Engine {
 
 	constructor(params: TspParams) {
 		super(params)
+		let hasMapSeed = params.mapSeed && params.mapSeed.trim().length > 0
+		if (hasMapSeed)
+			seedrandom(params.mapSeed, { global: true })
 		this.map = new CountryMap(params.numCities)
+		if (hasMapSeed)
+			seedrandom(params.engineSeed, { global: true })
 	}
 
 	newSolution(): Solution {

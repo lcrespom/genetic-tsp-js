@@ -1,14 +1,7 @@
 import { Population, EngineListener } from './engine'
 import { TspEngine, TspParams, CountryMap, TspSolution } from './tsp'
 
-let startTime = 0
-let lastTime = 0
-let lastStepTime = Date.now()
-let lastGenct = 0
-let lastIncumbentGen = 0
-let lastIncumbentWhen = 0
-let lastEval = 0
-const REFRESH_WAIT = 250
+// -------------------- Types --------------------
 
 export type TspWorkerStatus = {
 	generation: number
@@ -23,6 +16,21 @@ export type TspWorkerStatus = {
 type WorkerPostMessage = (data: any) => void
 let wkPostMessage: WorkerPostMessage = <WorkerPostMessage>postMessage
 
+
+// -------------------- Worker scope --------------------
+
+let startTime = 0
+let lastTime = 0
+let lastStepTime = Date.now()
+let lastGenct = 0
+let lastIncumbentGen = 0
+let lastIncumbentWhen = 0
+let lastEval = 0
+const REFRESH_WAIT = 250
+
+
+
+// -------------------- Message handling --------------------
 
 self.onmessage = msg => {
 	switch (msg.data.command) {

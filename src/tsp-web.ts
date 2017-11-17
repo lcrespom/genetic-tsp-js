@@ -98,7 +98,8 @@ function readParamsFromForm(): TspParams {
 		population: getInputNumValue('params.popsize'),
 		elite: getInputNumValue('params.elite'),
 		invertRatio: getInputNumValue('params.invert'),
-		weightExponent: getInputNumValue('params.exponent')
+		weightExponent: getInputNumValue('params.exponent'),
+		mapSeed: getInputValue('params.seed')
 	}
 }
 

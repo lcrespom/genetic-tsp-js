@@ -39,7 +39,6 @@ This is a 100% client-side project. You can deploy the web folder anywhere you w
 	- Highlight the segments that changed in the map from previous solution
 - Functionality
 	- Stop button
-	- Editable parameters
-	- Use random with seed, add seed to parameters
-		- See https://github.com/davidbau/seedrandom
+	- Editable parameters ✓
+	- Use random with seed, add seed to parameters ✓
 	- Support parallel engines / recombine in client
