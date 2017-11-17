@@ -19,6 +19,9 @@
 			border-bottom: 1px solid #e5e5e5;
 			margin-bottom: 20px;
 		}
+		#start {
+			width: 5rem;
+		}
 		.canvas-container {
 			width: 100%;
 			text-align:center;
@@ -50,9 +53,9 @@
 					<div class="col-sm-2">
 						<input id="params.popsize" type="number" min="10" class="form-control" value="50">
 					</div>
-					<label for="params.nworkers" class="col-sm-2 col-form-label text-md-right">Paralellism:</label>
+					<label for="params.seed" class="col-sm-2 col-form-label text-md-right">Random seed:</label>
 					<div class="col-sm-2">
-						<input disabled id="params.nworkers" type="number" min="1" max="32" class="form-control" value="1">
+						<input id="params.seed" type="text" class="form-control">
 					</div>
 				</div>
 				<div class="form-group form-row">
@@ -79,11 +82,18 @@
 					</div>
 				</div>
 				<div class="form-group form-row">
-					<label for="params.seed" class="col-sm-2 col-form-label text-md-right">Random seed:</label>
+					<label for="params.nworkers" class="col-sm-2 col-form-label text-md-right">Paralellism:</label>
 					<div class="col-sm-2">
-						<input id="params.seed" type="text" class="form-control">
+						<input disabled id="params.nworkers" type="number" min="1" max="32" class="form-control" value="1">
 					</div>
-					<div class="col-sm-8 text-right">
+					<label for="params.migration" class="col-sm-2 col-form-label text-md-right"
+						title="Number of generations after which populations share the incumbent">
+						Migration cadence:
+					</label>
+					<div class="col-sm-2">
+						<input disabled id="params.migration" type="number" min="1" max="32" class="form-control" value="10000">
+					</div>
+					<div class="col-sm-4 text-right">
 						<button id="start" type="button" class="btn btn-primary">Start</button>
 					</div>
 				</div>
