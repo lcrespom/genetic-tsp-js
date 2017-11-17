@@ -43,27 +43,33 @@ self.onmessage = msg => {
 const engineListener = {
 	engineStep(pop: Population, genct: number) {
 		if (!checkElapsed(REFRESH_WAIT)) return
-		let incumbent = <TspSolution>pop.getIncumbent()
-		let evl = incumbent.evaluate()
 		let now = Date.now()
-		let gps = (genct - lastGenct) / (now - lastStepTime) * 1000
-		if (evl != lastEval) {
-			lastEval = evl
-			lastIncumbentGen = genct
-			lastIncumbentWhen = now - startTime
-		}
-		let status: TspWorkerStatus = {
-			generation: genct,
-			gps,
-			eval: evl,
-			lastIncumbentGen,
-			elapsed: now - startTime,
-			lastIncumbentWhen,
-			incumbent
-		}
-		wkPostMessage({ command: 'status', status })
+		wkPostMessage({
+			command: 'status',
+			status: getStatus(pop, genct, now)
+		})
 		lastGenct = genct
 		lastStepTime = now
+	}
+}
+
+function getStatus(pop: Population, genct: number, now: number): TspWorkerStatus {
+	let incumbent = <TspSolution>pop.getIncumbent()
+	let evl = incumbent.evaluate()
+	let gps = (genct - lastGenct) / (now - lastStepTime) * 1000
+	if (evl != lastEval) {
+		lastEval = evl
+		lastIncumbentGen = genct
+		lastIncumbentWhen = now - startTime
+	}
+	return {
+		generation: genct,
+		gps,
+		eval: evl,
+		lastIncumbentGen,
+		elapsed: now - startTime,
+		lastIncumbentWhen,
+		incumbent
 	}
 }
 
@@ -72,15 +78,15 @@ function doStart(params: TspParams) {
 	tsp.setListener(engineListener)
 	startTime = Date.now()
 	tsp.start()
-	// tsp.steps(10000)
-	// tsp.run()
 }
 
 function doSteps(numSteps: number) {
 	tsp.steps(numSteps)
-	wkPostMessage({ command: 'steps' })
+	wkPostMessage({
+		command: 'steps',
+		incumbent: tsp.generation.getIncumbent()
+	})
 }
-
 
 function checkElapsed(elapsed: number): boolean {
 	let now = Date.now()
