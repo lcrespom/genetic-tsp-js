@@ -107,8 +107,23 @@ function readParamsFromForm(): TspParams {
 // ------------------------------ Event handling ------------------------------
 
 let but = byId('start') || new HTMLElement()
+let started = false
+let worker: Worker
+
 but.addEventListener('click', evt => {
-	let worker = new Worker('tsp-worker.js')
+	if (started) {
+		worker.terminate()
+		but.innerText = 'Start'
+	}
+	else {
+		startWorker()
+		but.innerText = 'Stop'
+	}
+	started = !started
+})
+
+function startWorker() {
+	worker = new Worker('tsp-worker.js')
 	worker.postMessage({ command: 'start', params: readParamsFromForm() })
 	let lastEval = 0
 	worker.onmessage = msg => {
@@ -119,9 +134,7 @@ but.addEventListener('click', evt => {
 			lastEval = status.eval
 		}
 	}
-	but.hidden = true
-})
-
+}
 
 // ------------------------------ Utilities ------------------------------
 
