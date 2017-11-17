@@ -128,7 +128,7 @@ but.addEventListener('click', evt => {
 })
 
 
-// ------------------------------ Worker managemen t ------------------------------
+// ------------------------------ Worker management ------------------------------
 
 function startWorker() {
 	worker = new Worker('tsp-worker.js')
