@@ -56,15 +56,24 @@
 					</div>
 				</div>
 				<div class="form-group form-row">
-					<label for="params.elite" class="col-sm-2 col-form-label text-md-right">Elite size:</label>
+					<label for="params.elite" class="col-sm-2 col-form-label text-md-right"
+						title="Number of top members of a generation that are copied to the next">
+						Elite size:
+					</label>
 					<div class="col-sm-2">
 						<input id="params.elite" type="number" min="0" class="form-control" value="10">
 					</div>
-					<label for="params.invert" class="col-sm-2 col-form-label text-md-right">Invert ratio:</label>
+					<label for="params.invert" class="col-sm-2 col-form-label text-md-right"
+						title="Ratio of inverted sequences during recombination">
+						Invert ratio:
+					</label>
 					<div class="col-sm-2">
 						<input id="params.invert" type="number" min="0" max="1" step="0.1" class="form-control" value="0.2">
 					</div>
-					<label for="params.exponent" class="col-sm-2 col-form-label text-md-right">Weight exponent:</label>
+					<label for="params.exponent" class="col-sm-2 col-form-label text-md-right"
+						title="Relative weight of favoring the best individuals during selection">
+						Weight exponent:
+					</label>
 					<div class="col-sm-2">
 						<input id="params.exponent" type="number" min="0" max="10" class="form-control" value="2">
 					</div>
