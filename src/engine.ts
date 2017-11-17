@@ -98,19 +98,29 @@ export abstract class Engine {
 	stop = false
 	generation: Population
 	listener: EngineListener
+	generationCount: number
 
 	constructor(params: EngineParams) {
 		this.params = params
 	}
 
-	run(): void {
-		let generationCount = 0
+	start() {
+		this.generationCount = 0
 		this.generation = this.randomize()
 		this.generation.prepareForSelection()
+	}
+
+	run(): void {
+		this.start()
 		while (!this.stop) {
 			this.step()
-			generationCount++
-			this.fireStepEvent(this.generation, generationCount)
+		}
+	}
+
+	steps(numSteps: number) {
+		while (!this.stop && numSteps > 0) {
+			this.step()
+			numSteps--
 		}
 	}
 
@@ -129,7 +139,9 @@ export abstract class Engine {
 		while (this.generation.size() < this.params.population)
 			this.generation.add(this.newSolution())
 		this.generation.prepareForSelection()
-	}
+		this.generationCount++
+		this.fireStepEvent(this.generation, this.generationCount)
+}
 
 	private copyElite(oldGen: Population, newGen: Population): void {
 		oldGen.copySolutions(newGen, this.params.elite)

@@ -14,7 +14,7 @@ export type TspWorkerStatus = {
 }
 
 type WorkerPostMessage = (data: any) => void
-let wkPostMessage: WorkerPostMessage = <WorkerPostMessage>postMessage
+let wkPostMessage: WorkerPostMessage = <WorkerPostMessage>self.postMessage
 
 
 // -------------------- Worker scope --------------------
@@ -27,7 +27,7 @@ let lastIncumbentGen = 0
 let lastIncumbentWhen = 0
 let lastEval = 0
 const REFRESH_WAIT = 250
-
+let tsp: TspEngine
 
 
 // -------------------- Message handling --------------------
@@ -35,6 +35,7 @@ const REFRESH_WAIT = 250
 self.onmessage = msg => {
 	switch (msg.data.command) {
 		case 'start': return doStart(msg.data.params)
+		case 'steps': return doSteps(msg.data.steps)
 		default: throw Error('Unknown command: ' + msg.data.command)
 	}
 }
@@ -60,17 +61,24 @@ const engineListener = {
 			lastIncumbentWhen,
 			incumbent
 		}
-		wkPostMessage(status)
+		wkPostMessage({ command: 'status', status })
 		lastGenct = genct
 		lastStepTime = now
 	}
 }
 
 function doStart(params: TspParams) {
-	let tsp = new TspEngine(params)
+	tsp = new TspEngine(params)
 	tsp.setListener(engineListener)
 	startTime = Date.now()
-	tsp.run()
+	tsp.start()
+	// tsp.steps(10000)
+	// tsp.run()
+}
+
+function doSteps(numSteps: number) {
+	tsp.steps(numSteps)
+	wkPostMessage({ command: 'steps' })
 }
 
 

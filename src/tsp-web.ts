@@ -103,12 +103,16 @@ function readParamsFromForm(): TspParams {
 	}
 }
 
+function getEngineSteps(): number {
+	return getInputNumValue('params.migration')
+}
 
 // ------------------------------ Event handling ------------------------------
 
 let but = byId('start') || new HTMLElement()
 let started = false
 let worker: Worker
+let lastEval = 0
 
 but.addEventListener('click', evt => {
 	if (started) {
@@ -125,14 +129,25 @@ but.addEventListener('click', evt => {
 function startWorker() {
 	worker = new Worker('tsp-worker.js')
 	worker.postMessage({ command: 'start', params: readParamsFromForm() })
-	let lastEval = 0
+	worker.postMessage({ command: 'steps', steps: getEngineSteps() })
 	worker.onmessage = msg => {
-		let status: TspWorkerStatus = msg.data
-		updateStatistics(status)
-		if (status.incumbent && status.eval != lastEval) {
-			drawSolution(status.incumbent)
-			lastEval = status.eval
+		switch (msg.data.command) {
+			case 'status':
+				doStatus(msg.data.status)
+				break
+			case 'steps':
+				worker.postMessage({ command: 'steps', steps: getEngineSteps() })
+				break
+			default: throw Error('Unknown command: ' + msg.data.command)
 		}
+	}
+}
+
+function doStatus(status: TspWorkerStatus) {
+	updateStatistics(status)
+	if (status.incumbent && status.eval != lastEval) {
+		drawSolution(status.incumbent)
+		lastEval = status.eval
 	}
 }
 
