@@ -10,8 +10,19 @@ let lastIncumbentWhen = 0
 let lastEval = 0
 const REFRESH_WAIT = 250
 
+export type TspWorkerStatus = {
+	generation: number
+	gps: number
+	eval: number
+	lastIncumbentGen: number
+	elapsed: number
+	lastIncumbentWhen: number
+	incumbent: TspSolution
+}
+
 type WorkerPostMessage = (data: any) => void
 let wkPostMessage: WorkerPostMessage = <WorkerPostMessage>postMessage
+
 
 self.onmessage = msg => {
 	switch (msg.data.command) {
@@ -20,21 +31,21 @@ self.onmessage = msg => {
 	}
 }
 
-const engineListener: EngineListener = {
+const engineListener = {
 	engineStep(pop: Population, genct: number) {
 		if (!checkElapsed(REFRESH_WAIT)) return
 		let incumbent = <TspSolution>pop.getIncumbent()
 		let evl = incumbent.evaluate()
 		let now = Date.now()
-		let gpm = (genct - lastGenct) / (now - lastStepTime) * 1000 * 60
+		let gps = (genct - lastGenct) / (now - lastStepTime) * 1000
 		if (evl != lastEval) {
 			lastEval = evl
 			lastIncumbentGen = genct
 			lastIncumbentWhen = now - startTime
 		}
-		let status = {
+		let status: TspWorkerStatus = {
 			generation: genct,
-			gpm,
+			gps,
 			eval: evl,
 			lastIncumbentGen,
 			elapsed: now - startTime,
@@ -47,22 +58,11 @@ const engineListener: EngineListener = {
 	}
 }
 
-function doStart(params) {
-	let tsp = initTSP(params)
+function doStart(params: TspParams) {
+	let tsp = new TspEngine(params)
 	tsp.setListener(engineListener)
 	startTime = Date.now()
 	tsp.run()
-}
-
-function initTSP(params): TspEngine {
-	let tspParams: TspParams = {
-		numCities: 200,
-		population: 50,
-		elite: 10,
-		invertRatio: 0.2,
-		weightExponent: 2.0
-	}
-	return new TspEngine(tspParams)
 }
 
 

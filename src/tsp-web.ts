@@ -1,4 +1,5 @@
-import { TspSolution, CountryMap } from './tsp'
+import { TspSolution, CountryMap, TspParams } from './tsp'
+import { TspWorkerStatus } from './tsp-worker'
 
 // ------------------------------ Drawing ------------------------------
 
@@ -82,13 +83,23 @@ function formatTime(t: number) {
 	return '' + h + ':' + prepend0(m % 60) + ':' + prepend0(s % 60)
 }
 
-function updateStatistics(status) {
+function updateStatistics(status: TspWorkerStatus) {
 	setText('status.generation', formatNum(status.generation))
-	setText('status.gpm', formatNum(status.gpm.toFixed(0)))
+	setText('status.gps', formatNum(status.gps.toFixed(0)))
 	setText('status.eval', formatNum(Math.round(status.eval)))
 	setText('status.lastIncumbentGen', formatNum(status.lastIncumbentGen))
 	setText('status.elapsed', formatTime(status.elapsed))
 	setText('status.lastIncumbentWhen', formatTime(status.lastIncumbentWhen))
+}
+
+function readParamsFromForm(): TspParams {
+	return {
+		numCities: getInputNumValue('params.ncities'),
+		population: getInputNumValue('params.popsize'),
+		elite: getInputNumValue('params.elite'),
+		invertRatio: getInputNumValue('params.invert'),
+		weightExponent: getInputNumValue('params.exponent')
+	}
 }
 
 
@@ -97,13 +108,14 @@ function updateStatistics(status) {
 let but = byId('start') || new HTMLElement()
 but.addEventListener('click', evt => {
 	let worker = new Worker('tsp-worker.js')
-	worker.postMessage({ command: 'start', params: {}})
+	worker.postMessage({ command: 'start', params: readParamsFromForm() })
 	let lastEval = 0
 	worker.onmessage = msg => {
-		updateStatistics(msg.data)
-		if (msg.data.incumbent && msg.data.eval != lastEval) {
-			drawSolution(msg.data.incumbent)
-			lastEval = msg.data.eval
+		let status: TspWorkerStatus = msg.data
+		updateStatistics(status)
+		if (status.incumbent && status.eval != lastEval) {
+			drawSolution(status.incumbent)
+			lastEval = status.eval
 		}
 	}
 	but.hidden = true
@@ -123,4 +135,18 @@ function setText(id: string, txt: string) {
 		(<HTMLInputElement>elem).value = txt
 	else
 		elem.innerText = txt
+}
+
+function getInputValue(id: string, deflt = ''): string {
+	let elem = byId(id)
+	if (!elem) return deflt
+	if (elem.tagName == 'INPUT')
+		return (<HTMLInputElement>elem).value
+	else
+		return deflt
+}
+
+function getInputNumValue(id: string): number {
+	let v = getInputValue(id, '0')
+	return parseFloat(v)
 }
