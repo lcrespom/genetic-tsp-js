@@ -107,13 +107,14 @@ function getEngineSteps(): number {
 	return getInputNumValue('params.migration')
 }
 
+
 // ------------------------------ Event handling ------------------------------
 
-let but = byId('start') || new HTMLElement()
 let started = false
 let worker: Worker
 let lastEval = 0
 
+let but = byId('start') || new HTMLElement()
 but.addEventListener('click', evt => {
 	if (started) {
 		worker.terminate()
@@ -126,6 +127,9 @@ but.addEventListener('click', evt => {
 	started = !started
 })
 
+
+// ------------------------------ Worker managemen t ------------------------------
+
 function startWorker() {
 	worker = new Worker('tsp-worker.js')
 	worker.postMessage({ command: 'start', params: readParamsFromForm() })
@@ -136,7 +140,10 @@ function startWorker() {
 				doStatus(msg.data.status)
 				break
 			case 'steps':
-				worker.postMessage({ command: 'steps', steps: getEngineSteps() })
+				worker.postMessage({
+					command: 'steps',
+					steps: getEngineSteps()
+				})
 				break
 			default: throw Error('Unknown command: ' + msg.data.command)
 		}
@@ -150,6 +157,7 @@ function doStatus(status: TspWorkerStatus) {
 		lastEval = status.eval
 	}
 }
+
 
 // ------------------------------ Utilities ------------------------------
 
