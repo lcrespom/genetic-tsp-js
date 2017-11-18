@@ -227,6 +227,7 @@ function combineStatuses(): TspWorkerStatus {
 	return result
 }
 
+
 // ------------------------------ Utilities ------------------------------
 
 function byId(id: string): HTMLElement | null {
