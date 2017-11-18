@@ -36,8 +36,10 @@ This is a 100% client-side project. You can deploy the web folder anywhere you w
 - Look & feel
 	- Use Bootstrap ✓
 	- Highlight the segments that changed in the map from previous solution
+	- Add *Evolution* section displaying progress of solution: 1pixel = 1 second
 - Functionality
 	- Stop button ✓
 	- Editable parameters ✓
 	- Use random with seed, add seed to parameters ✓
 	- Support parallel engines / recombine in client
+		- Display combined status of all workers
