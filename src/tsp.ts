@@ -3,6 +3,11 @@ import { Solution, EngineParams, Engine } from './engine'
 declare function require(name: string)
 const seedrandom = require('seedrandom')
 
+
+const CITY_MAP_WIDTH = 620
+const CITY_MAP_HEIGHT = 460
+
+
 // ----- TSP Engine Parameters -----
 export interface TspParams extends EngineParams {
 	numCities: number
@@ -50,11 +55,9 @@ export class CountryMap {
 		}
 		else {
 			// Just spread cities randomly
-			let width = 640
-			let height = 480
 			for (let i = 0; i < this.numCities; i++) {
-				cityX[i] = Math.random() * width
-				cityY[i] = Math.random() * height
+				cityX[i] = Math.random() * CITY_MAP_WIDTH
+				cityY[i] = Math.random() * CITY_MAP_HEIGHT
 			}
 		}
 	}

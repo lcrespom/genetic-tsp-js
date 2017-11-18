@@ -24,8 +24,11 @@ function setupContext(): CanvasRenderingContext2D | null {
 }
 
 function drawCities(ctx: CanvasRenderingContext2D, cities: Cities) {
-	for (let i = 0; i < cities.length; i++)
-		ctx.fillRect(cities[i].x - 4, cities[i].y - 4, 8, 8)
+	for (let i = 0; i < cities.length; i++) {
+		ctx.beginPath()
+		ctx.arc(cities[i].x, cities[i].y, 4, 0, 2 * Math.PI)
+		ctx.fill()
+	}
 }
 
 function drawPath(ctx: CanvasRenderingContext2D, cities: Cities, path: number[]) {
@@ -52,9 +55,10 @@ export function drawSolution(sol: TspSolution) {
 	if (cities.length == 0) return
 	let ctx = setupContext()
 	if (!ctx) return
-	ctx.fillStyle = '#00f'
-	ctx.strokeStyle = '#000'
+	ctx.fillStyle = '#000'
+	ctx.strokeStyle = '#337AB7'
 	ctx.lineWidth = 2
+	ctx.translate(10, 10)
 	drawPath(ctx, cities, sol.cities)
 	drawCities(ctx, cities)
 }
