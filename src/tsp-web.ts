@@ -4,7 +4,7 @@ import { TspWorkerStatus } from './tsp-worker'
 
 // ------------------------------ Drawing ------------------------------
 
-const CITY_COLOR = '#343A40'
+const CITY_COLOR = '#343a40'
 const SEGMENT_COLOR = '#007bff'
 const CITY_SIZE = 3
 const SEGMENT_WIDTH = 1.2
