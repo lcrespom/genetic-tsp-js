@@ -121,7 +121,12 @@ function getNumWorkers(): number {
 let started = false
 let workers: Worker[]
 let incumbents: TspSolution[]
-let lastEval = 0
+let statuses: TspWorkerStatus[]
+let lastStatusData = {
+	eval: 0,
+	incumbentGen: 0,
+	incumbentWhen: 0
+}
 
 let but = byId('start') || new HTMLElement()
 but.addEventListener('click', evt => {
@@ -143,20 +148,19 @@ but.addEventListener('click', evt => {
 function startWorkers(numWorkers: number) {
 	workers = []
 	incumbents = []
+	statuses = []
 	for (let i = 0; i < numWorkers; i++)
-		workers.push(startWorker(i == 0))
+		workers.push(startWorker())
 }
 
-function startWorker(showStatus: boolean): Worker {
+function startWorker(): Worker {
 	let worker = new Worker('tsp-worker.js')
 	worker.postMessage({ command: 'start', params: readParamsFromForm() })
 	worker.postMessage({ command: 'steps', steps: getEngineSteps() })
 	worker.onmessage = msg => {
 		switch (msg.data.command) {
 			case 'status':
-				// ToDo: combine all status into one
-				if (showStatus)
-					doStatus(msg.data.status)
+				doStatus(msg.data.status)
 				break
 			case 'steps':
 				doSteps(worker, msg.data.incumbent)
@@ -167,12 +171,20 @@ function startWorker(showStatus: boolean): Worker {
 	return worker
 }
 
-function doStatus(status: TspWorkerStatus) {
-	updateStatistics(status)
-	if (status.incumbent && status.eval != lastEval) {
+function doStatus(stat: TspWorkerStatus) {
+	statuses.push(stat)
+	if (statuses.length < workers.length) return
+	let status = combineStatuses()
+	if (status.eval != lastStatusData.eval) {
 		drawSolution(status.incumbent)
-		lastEval = status.eval
+		lastStatusData.eval = status.eval
+		lastStatusData.incumbentGen = status.generation
+		lastStatusData.incumbentWhen = status.elapsed
 	}
+	status.lastIncumbentGen = lastStatusData.incumbentGen
+	status.lastIncumbentWhen = lastStatusData.incumbentWhen
+	updateStatistics(status)
+	statuses = []
 }
 
 function doSteps(worker: Worker, incumbent: TspSolution) {
@@ -198,6 +210,21 @@ function migrateIncumbent() {
 			solution: winner
 		})
 	}
+}
+
+function combineStatuses(): TspWorkerStatus {
+	let result = statuses[0]
+	for (let i = 1; i < statuses.length; i++) {
+		let status = statuses[i]
+		if (status.eval < result.eval) {
+			result.eval = status.eval
+			result.incumbent = status.incumbent
+		}
+		result.generation += status.generation
+		result.gps += status.gps
+	}
+	result.elapsed = statuses[statuses.length - 1].elapsed
+	return result
 }
 
 // ------------------------------ Utilities ------------------------------

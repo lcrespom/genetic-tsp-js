@@ -39,4 +39,3 @@ This is a 100% client-side project. You can deploy the web folder anywhere you w
 	- Add *Evolution* section displaying progress of solution: 1pixel = 1 second
 - Functionality
 	- Support parallel engines / recombine in client √
-		- Display combined status of all workers
