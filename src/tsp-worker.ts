@@ -36,6 +36,7 @@ self.onmessage = msg => {
 	switch (msg.data.command) {
 		case 'start': return doStart(msg.data.params)
 		case 'steps': return doSteps(msg.data.steps)
+		case 'migrate': return doMigrate(msg.data.solution)
 		default: throw Error('Unknown command: ' + msg.data.command)
 	}
 }
@@ -86,6 +87,14 @@ function doSteps(numSteps: number) {
 		command: 'steps',
 		incumbent: tsp.generation.getIncumbent()
 	})
+}
+
+function doMigrate(solution: TspSolution) {
+	let incumbent: TspSolution = <TspSolution>tsp.newSolution()
+	incumbent.setCities(solution.cities)
+	if (tsp.generation.hasClone(incumbent)) return
+	tsp.generation.add(incumbent)
+	tsp.generation.prepareForSelection()
 }
 
 function checkElapsed(elapsed: number): boolean {

@@ -86,6 +86,11 @@ export class TspSolution extends Solution {
 		}
 	}
 
+	setCities(cities: number[]) {
+		this.cities = cities
+		this.eval = this.calcTrip()
+	}
+
 	evaluate(): number {
 		return this.eval
 	}

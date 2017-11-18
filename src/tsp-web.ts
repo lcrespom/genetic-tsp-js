@@ -104,24 +104,30 @@ function readParamsFromForm(): TspParams {
 }
 
 function getEngineSteps(): number {
-	return getInputNumValue('params.migration')
+	return getInputNumValue('params.migration') || 10000
+}
+
+function getNumWorkers(): number {
+	return getInputNumValue('params.nworkers') || 1
 }
 
 
 // ------------------------------ Event handling ------------------------------
 
 let started = false
-let worker: Worker
+let workers: Worker[]
+let incumbents: TspSolution[]
 let lastEval = 0
 
 let but = byId('start') || new HTMLElement()
 but.addEventListener('click', evt => {
 	if (started) {
-		worker.terminate()
+		for (let worker of workers)
+			worker.terminate()
 		but.innerText = 'Start'
 	}
 	else {
-		startWorker()
+		startWorkers(getNumWorkers())
 		but.innerText = 'Stop'
 	}
 	started = !started
@@ -130,24 +136,31 @@ but.addEventListener('click', evt => {
 
 // ------------------------------ Worker management ------------------------------
 
-function startWorker() {
-	worker = new Worker('tsp-worker.js')
+function startWorkers(numWorkers: number) {
+	workers = []
+	incumbents = []
+	for (let i = 0; i < numWorkers; i++)
+		workers.push(startWorker(i == 0))
+}
+
+function startWorker(showStatus: boolean): Worker {
+	let worker = new Worker('tsp-worker.js')
 	worker.postMessage({ command: 'start', params: readParamsFromForm() })
 	worker.postMessage({ command: 'steps', steps: getEngineSteps() })
 	worker.onmessage = msg => {
 		switch (msg.data.command) {
 			case 'status':
-				doStatus(msg.data.status)
+				// ToDo: combine all status into one
+				if (showStatus)
+					doStatus(msg.data.status)
 				break
 			case 'steps':
-				worker.postMessage({
-					command: 'steps',
-					steps: getEngineSteps()
-				})
+				doSteps(worker, msg.data.incumbent)
 				break
 			default: throw Error('Unknown command: ' + msg.data.command)
 		}
 	}
+	return worker
 }
 
 function doStatus(status: TspWorkerStatus) {
@@ -158,6 +171,30 @@ function doStatus(status: TspWorkerStatus) {
 	}
 }
 
+function doSteps(worker: Worker, incumbent: TspSolution) {
+	incumbents.push(incumbent)
+	if (incumbents.length >= workers.length)
+		migrateIncumbent()
+	worker.postMessage({
+		command: 'steps',
+		steps: getEngineSteps()
+	})
+}
+
+function migrateIncumbent() {
+	let winner = incumbents[0]
+	for (let incumbent of incumbents) {
+		if (incumbent.eval < winner.eval)
+			winner = incumbent
+	}
+	incumbents = []
+	for (let worker of workers) {
+		worker.postMessage({
+			command: 'migrate',
+			solution: winner
+		})
+	}
+}
 
 // ------------------------------ Utilities ------------------------------
 
