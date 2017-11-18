@@ -1,7 +1,13 @@
 import { TspSolution, CountryMap, TspParams } from './tsp'
 import { TspWorkerStatus } from './tsp-worker'
 
+
 // ------------------------------ Drawing ------------------------------
+
+const CITY_COLOR = '#343A40'
+const SEGMENT_COLOR = '#007bff'
+const CITY_SIZE = 3
+const SEGMENT_WIDTH = 1.2
 
 type Point = {
 	x: number
@@ -26,7 +32,7 @@ function setupContext(): CanvasRenderingContext2D | null {
 function drawCities(ctx: CanvasRenderingContext2D, cities: Cities) {
 	for (let i = 0; i < cities.length; i++) {
 		ctx.beginPath()
-		ctx.arc(cities[i].x, cities[i].y, 4, 0, 2 * Math.PI)
+		ctx.arc(cities[i].x, cities[i].y, CITY_SIZE, 0, 2 * Math.PI)
 		ctx.fill()
 	}
 }
@@ -55,9 +61,9 @@ export function drawSolution(sol: TspSolution) {
 	if (cities.length == 0) return
 	let ctx = setupContext()
 	if (!ctx) return
-	ctx.fillStyle = '#000'
-	ctx.strokeStyle = '#337AB7'
-	ctx.lineWidth = 2
+	ctx.fillStyle = CITY_COLOR
+	ctx.strokeStyle = SEGMENT_COLOR
+	ctx.lineWidth = SEGMENT_WIDTH
 	ctx.translate(10, 10)
 	drawPath(ctx, cities, sol.cities)
 	drawCities(ctx, cities)
