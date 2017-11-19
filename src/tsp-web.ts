@@ -148,6 +148,21 @@ but.addEventListener('click', evt => {
 	started = !started
 })
 
+window.addEventListener('load', function(event) {
+	let sliders = document.getElementsByClassName('slider')
+	for (let i = 0; i < sliders.length; i++)
+		setupSlider(sliders[i])
+})
+
+function setupSlider(el: Element) {
+	let toggle = el.getElementsByClassName('slider-toggle')[0]
+	let slider = <HTMLElement>el.getElementsByClassName('slider-content')[0]
+	if (!toggle || !slider) return
+	slider.style.maxHeight = '' + slider.offsetHeight + 'px'
+	toggle.addEventListener('click', evt => {
+		slider.classList.toggle('slider-closed')
+	})
+}
 
 // ------------------------------ Worker management ------------------------------
 

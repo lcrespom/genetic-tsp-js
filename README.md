@@ -3,7 +3,7 @@
 ## Introduction
 There are two kinds of AI:
 - Soft (or weak) AI: uses traditional software techniques, more or less based on brute force, to solve very specific problems. As soon as a computer can perform some task using soft AI, it is no longer considered an intelligent task. Example: chess, rule-based expert systems.
-- Hard (or strong) AI: tries to solve more general problems using  advanced techniques, usually by imitating nature. For example, deep learning replicates neural networks, neurons and synapses.
+- Hard (or strong) AI: tries to solve more general problems using advanced techniques, usually by imitating nature. For example, deep learning replicates neural networks, neurons and synapses.
 
 Another natural phenomenon worth imitating is evolution:
 - Natural evolution is based on natural selection to continuously improve a species to adapt to the environment.
@@ -34,7 +34,6 @@ This is a 100% client-side project. You can deploy the web folder anywhere you w
 
 ## ToDo
 - Look & feel
-	- Add some padding in the map canvas √
 	- Highlight the segments that changed in the map from previous solution
 	- Add *Evolution* section displaying progress of solution: 1pixel = 1 second
 - Functionality

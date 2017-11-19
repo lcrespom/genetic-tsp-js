@@ -24,9 +24,20 @@
 			color: #ccc;
 			fill: currentColor;
 		}
+		.slider-toggle {
+			cursor: pointer;
+		}
+		.slider-content {
+			overflow: hidden;
+			transition: 0.5s;
+		}
+		.slider-closed {
+			transition: 0.5s;
+			max-height: 0px !important;
+		}
 		legend {
 			border-bottom: 1px solid #e5e5e5;
-			margin-bottom: 20px;
+			margin-bottom: 1rem;
 		}
 		#start {
 			width: 5rem;
@@ -53,10 +64,11 @@
 
 	<div class="m-2">
 	<div class="mx-auto main">
-		<!-- -------------------- TSP Parameters -------------------- -->
-		<form>
-			<fieldset>
-				<legend>Parameters</legend>
+	<!-- -------------------- TSP Parameters -------------------- -->
+	<form>
+		<fieldset class="slider">
+			<legend class="slider-toggle">Parameters</legend>
+			<div class="slider-content">
 				<div class="form-group form-row">
 					<label for="params.ncities" class="col-sm-2 col-form-label text-md-right">Number of cities:</label>
 					<div class="col-sm-2">
@@ -110,11 +122,13 @@
 						<button id="start" type="button" class="btn btn-primary">Start</button>
 					</div>
 				</div>
-			</fieldset>
+			</div>
+		</fieldset>
 
-			<!-- -------------------- TSP Status -------------------- -->
-			<fieldset>
-				<legend>Status</legend>
+		<!-- -------------------- TSP Status -------------------- -->
+		<fieldset class="slider">
+			<legend class="slider-toggle">Status</legend>
+			<div class="slider-content">
 				<div class="form-group form-row">
 					<label for="status.elapsed" class="col-sm-2 col-form-label text-md-right">Elapsed time:</label>
 					<div class="col-sm-2">
@@ -143,17 +157,20 @@
 						<input id="status.lastIncumbentWhen" class="form-control" readonly>
 					</div>
 				</div>
-			</fieldset>
+			</div>
+		</fieldset>
 
-			<!-- -------------------- Map -------------------- -->
-			<fieldset>
-				<legend>Map</legend>
+		<!-- -------------------- Map -------------------- -->
+		<fieldset class="slider">
+			<legend class="slider-toggle">Map</legend>
+			<div class="slider-content">
 				<div class="canvas-container">
 					<canvas id="canvas" width="640" height="480">
 					</canvas>
 				</div>
-			</fieldset>
-		</form>
+			</div>
+		</fieldset>
+	</form>
 	</div>
 	</div>
 
