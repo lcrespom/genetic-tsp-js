@@ -148,17 +148,22 @@ but.addEventListener('click', evt => {
 	started = !started
 })
 
-window.addEventListener('load', function(event) {
+window.addEventListener('load', _ => setupSliders(true))
+window.addEventListener('resize', _ => setupSliders(false))
+
+function setupSliders(registerClick: boolean) {
 	let sliders = document.getElementsByClassName('slider')
 	for (let i = 0; i < sliders.length; i++)
-		setupSlider(sliders[i])
-})
+		setupSlider(sliders[i], registerClick)
+}
 
-function setupSlider(el: Element) {
+function setupSlider(el: Element, registerClick: boolean) {
 	let toggle = el.getElementsByClassName('slider-toggle')[0]
 	let slider = <HTMLElement>el.getElementsByClassName('slider-content')[0]
 	if (!toggle || !slider) return
+	slider.style.maxHeight = ''	// Required to get the default offsetHeight
 	slider.style.maxHeight = '' + slider.offsetHeight + 'px'
+	if (!registerClick) return
 	toggle.addEventListener('click', evt => {
 		slider.classList.toggle('slider-closed')
 	})
