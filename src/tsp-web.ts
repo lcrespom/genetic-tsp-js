@@ -164,9 +164,9 @@ function setupSlider(el: Element, registerClick: boolean) {
 	slider.style.maxHeight = ''	// Required to get the default offsetHeight
 	slider.style.maxHeight = '' + slider.offsetHeight + 'px'
 	if (!registerClick) return
-	toggle.addEventListener('click', evt => {
+	toggle.addEventListener('click', _ =>
 		slider.classList.toggle('slider-closed')
-	})
+	)
 }
 
 // ------------------------------ Worker management ------------------------------
