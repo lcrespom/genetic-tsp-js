@@ -73,11 +73,8 @@ export function drawSolution(sol: TspSolution) {
 // ------------------------------ Statistics ------------------------------
 
 function formatNum(nStr) {
-	nStr += ''
-	let rgx = /(\d+)(\d{3})/
-	while (rgx.test(nStr))
-		nStr = nStr.replace(rgx, '$1.$2')
-	return nStr
+	let n = parseFloat(nStr)
+	return n.toLocaleString()
 }
 
 function prepend0(num) {
