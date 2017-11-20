@@ -100,13 +100,16 @@ function updateStatistics(status: TspWorkerStatus) {
 }
 
 function readParamsFromForm(): TspParams {
+	let mapSeed = getInputValue('params.seed')
+	if (getNumWorkers() > 1 && mapSeed.trim().length == 0)
+		mapSeed = '' + Date.now()
 	return {
 		numCities: getInputNumValue('params.ncities'),
 		population: getInputNumValue('params.popsize'),
 		elite: getInputNumValue('params.elite'),
 		invertRatio: getInputNumValue('params.invert'),
 		weightExponent: getInputNumValue('params.exponent'),
-		mapSeed: getInputValue('params.seed')
+		mapSeed
 	}
 }
 
@@ -172,13 +175,14 @@ function startWorkers(numWorkers: number) {
 	workers = []
 	incumbents = []
 	statuses = []
+	let params = readParamsFromForm()
 	for (let i = 0; i < numWorkers; i++)
-		workers.push(startWorker())
+		workers.push(startWorker(params))
 }
 
-function startWorker(): Worker {
+function startWorker(params: TspParams): Worker {
 	let worker = new Worker('tsp-worker.js')
-	worker.postMessage({ command: 'start', params: readParamsFromForm() })
+	worker.postMessage({ command: 'start', params })
 	worker.postMessage({ command: 'steps', steps: getEngineSteps() })
 	worker.onmessage = msg => {
 		switch (msg.data.command) {
