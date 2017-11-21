@@ -56,7 +56,7 @@ function buildCities(map: CountryMap): Cities {
 	return cities
 }
 
-export function drawSolution(sol: TspSolution) {
+function drawSolution(sol: TspSolution) {
 	let cities = buildCities(sol.map)
 	if (cities.length == 0) return
 	let ctx = setupContext()
