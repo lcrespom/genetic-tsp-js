@@ -41,7 +41,7 @@ legend {
 	width: 100%;
 	text-align:center;
 }
-#canvas {
+canvas {
 	border: 1px solid #CCC;
 	border-radius: 4px;
 }

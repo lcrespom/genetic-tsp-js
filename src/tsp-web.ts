@@ -17,11 +17,12 @@ type Point = {
 type Cities = Point[]
 
 
-function setupContext(): CanvasRenderingContext2D | null {
-	let canvas = <HTMLCanvasElement>document.getElementById('canvas')
+function setupContext(canvasId, clean = true): CanvasRenderingContext2D | null {
+	let canvas = <HTMLCanvasElement>document.getElementById(canvasId)
 	if (!canvas || !canvas.getContext)
 		return null
 	let ctx = <CanvasRenderingContext2D>canvas.getContext('2d')
+	if (!clean) return ctx
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 	let w = canvas.width
 	canvas.width = 1
@@ -59,7 +60,7 @@ function buildCities(map: CountryMap): Cities {
 export function drawSolution(sol: TspSolution) {
 	let cities = buildCities(sol.map)
 	if (cities.length == 0) return
-	let ctx = setupContext()
+	let ctx = setupContext('canvas')
 	if (!ctx) return
 	ctx.fillStyle = CITY_COLOR
 	ctx.strokeStyle = SEGMENT_COLOR
@@ -67,6 +68,24 @@ export function drawSolution(sol: TspSolution) {
 	ctx.translate(10, 10)
 	drawPath(ctx, cities, sol.cities)
 	drawCities(ctx, cities)
+}
+
+let histogramH = 0
+
+function drawHistogram(status: TspWorkerStatus) {
+	if (status.elapsed < 1000) return
+	if (histogramH == 0)
+		histogramH = status.incumbent.eval
+	let w = status.elapsed / 1000
+	let h = 240 * status.incumbent.eval / histogramH
+	let ctx = setupContext('histogram', false)
+	if (!ctx) return
+	ctx.strokeStyle = SEGMENT_COLOR
+	ctx.lineWidth = 1
+	ctx.beginPath()
+	ctx.moveTo(w, 240)
+	ctx.lineTo(w, 240 - h)
+	ctx.stroke()
 }
 
 
@@ -204,6 +223,7 @@ function doStatus(stat: TspWorkerStatus) {
 	let status = combineStatuses()
 	if (status.eval != lastStatusData.eval) {
 		drawSolution(status.incumbent)
+		drawHistogram(status)
 		lastStatusData.eval = status.eval
 		lastStatusData.incumbentGen = status.generation
 		lastStatusData.incumbentWhen = status.elapsed
