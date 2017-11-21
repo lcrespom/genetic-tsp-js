@@ -17,12 +17,11 @@ type Point = {
 type Cities = Point[]
 
 
-function setupContext(canvasId, clean = true): CanvasRenderingContext2D | null {
+function setupContext(canvasId): CanvasRenderingContext2D | null {
 	let canvas = <HTMLCanvasElement>document.getElementById(canvasId)
 	if (!canvas || !canvas.getContext)
 		return null
 	let ctx = <CanvasRenderingContext2D>canvas.getContext('2d')
-	if (!clean) return ctx
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 	let w = canvas.width
 	canvas.width = 1
@@ -70,18 +69,38 @@ function drawSolution(sol: TspSolution) {
 	drawCities(ctx, cities)
 }
 
-let histogramH = 0
+type HistogramItem = {
+	when: number
+	eval: number
+}
+let histogram: HistogramItem[] = []
 
-function drawHistogram(status: TspWorkerStatus) {
-	if (status.elapsed < 1000) return
-	if (histogramH == 0)
-		histogramH = status.incumbent.eval
-	let w = status.elapsed / 1000
-	let h = 240 * status.incumbent.eval / histogramH
-	let ctx = setupContext('histogram', false)
+function updateHistogram(status: TspWorkerStatus) {
+	if (status.elapsed < 2000) return
+	histogram.push({
+		when: status.elapsed,
+		eval: status.incumbent.eval
+	})
+}
+
+function drawHistogram(elapsed: number) {
+	let ctx = setupContext('histogram')
 	if (!ctx) return
 	ctx.strokeStyle = SEGMENT_COLOR
 	ctx.lineWidth = 1
+	for (let item of histogram)
+		drawHistogramItem(ctx, item)
+	let now = {
+		when: Math.ceil(elapsed / 1000) * 1000 + 500,
+		eval: histogram[0].eval
+	}
+	ctx.strokeStyle = '#F00'
+	drawHistogramItem(ctx, now)
+}
+
+function drawHistogramItem(ctx: CanvasRenderingContext2D, item: HistogramItem) {
+	let w = item.when / 1000
+	let h = 240 * item.eval / histogram[0].eval
 	ctx.beginPath()
 	ctx.moveTo(w, 240)
 	ctx.lineTo(w, 240 - h)
@@ -162,6 +181,7 @@ but.addEventListener('click', evt => {
 	}
 	else {
 		startWorkers(getNumWorkers())
+		histogram = []
 		but.innerText = 'Stop'
 	}
 	started = !started
@@ -223,7 +243,7 @@ function doStatus(stat: TspWorkerStatus) {
 	let status = combineStatuses()
 	if (status.eval != lastStatusData.eval) {
 		drawSolution(status.incumbent)
-		drawHistogram(status)
+		updateHistogram(status)
 		lastStatusData.eval = status.eval
 		lastStatusData.incumbentGen = status.generation
 		lastStatusData.incumbentWhen = status.elapsed
@@ -231,6 +251,7 @@ function doStatus(stat: TspWorkerStatus) {
 	status.lastIncumbentGen = lastStatusData.incumbentGen
 	status.lastIncumbentWhen = lastStatusData.incumbentWhen
 	updateStatistics(status)
+	drawHistogram(status.elapsed)
 	statuses = []
 }
 
