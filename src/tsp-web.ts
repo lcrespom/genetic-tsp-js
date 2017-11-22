@@ -69,11 +69,13 @@ function drawSolution(sol: TspSolution) {
 	drawCities(ctx, cities)
 }
 
+
 type HistogramItem = {
 	when: number
 	eval: number
 }
 let histogram: HistogramItem[] = []
+let histogramSec = 0
 
 function updateHistogram(status: TspWorkerStatus) {
 	if (status.elapsed < 2000) return
@@ -84,6 +86,9 @@ function updateHistogram(status: TspWorkerStatus) {
 }
 
 function drawHistogram(elapsed: number) {
+	let sec = Math.ceil(elapsed / 1000)
+	if (sec == histogramSec) return
+	histogramSec = sec
 	let ctx = setupContext('histogram')
 	if (!ctx) return
 	ctx.strokeStyle = SEGMENT_COLOR
@@ -91,10 +96,10 @@ function drawHistogram(elapsed: number) {
 	for (let item of histogram)
 		drawHistogramItem(ctx, item)
 	let now = {
-		when: Math.ceil(elapsed / 1000) * 1000 + 500,
+		when: sec * 1000 + 500,
 		eval: histogram[0].eval
 	}
-	ctx.strokeStyle = '#F00'
+	ctx.strokeStyle = '#00f'
 	drawHistogramItem(ctx, now)
 }
 
