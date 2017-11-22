@@ -8,6 +8,9 @@ const CITY_COLOR = '#343a40'
 const SEGMENT_COLOR = '#007bff'
 const CITY_SIZE = 3
 const SEGMENT_WIDTH = 1.2
+const HISTOGRAM_BG_COLOR = '#dfefff'
+const HISTOGRAM_WIDTH = 640
+const HISTOGRAM_HEIGHT = 240
 
 type Point = {
 	x: number
@@ -92,23 +95,19 @@ function drawHistogram(elapsed: number) {
 	let ctx = setupContext('histogram')
 	if (!ctx) return
 	ctx.strokeStyle = SEGMENT_COLOR
+	ctx.fillStyle = HISTOGRAM_BG_COLOR
 	ctx.lineWidth = 1
+	ctx.fillRect(0, 0, sec + 0.5, HISTOGRAM_HEIGHT)
 	for (let item of histogram)
 		drawHistogramItem(ctx, item)
-	let now = {
-		when: sec * 1000 + 500,
-		eval: histogram[0].eval
-	}
-	ctx.strokeStyle = '#00f'
-	drawHistogramItem(ctx, now)
 }
 
 function drawHistogramItem(ctx: CanvasRenderingContext2D, item: HistogramItem) {
 	let w = item.when / 1000
-	let h = 240 * item.eval / histogram[0].eval
+	let h = HISTOGRAM_HEIGHT * item.eval / histogram[0].eval
 	ctx.beginPath()
-	ctx.moveTo(w, 240)
-	ctx.lineTo(w, 240 - h)
+	ctx.moveTo(w, HISTOGRAM_HEIGHT)
+	ctx.lineTo(w, HISTOGRAM_HEIGHT - h)
 	ctx.stroke()
 }
 
