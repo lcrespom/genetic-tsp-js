@@ -26,6 +26,17 @@ In order for a problem to be a good candidate to be solved using a genetic algor
 
 The genetic engine will then use the evaluation function to select the best solutions of a given population in order to recombine their sequences and produce the new generation.
 
+## TSP parameters
+For a given amount of cities, or more in general, for a given problem to be solved, finding a good solution usually requires some tuning of the genetic engine parameters. These are the following:
+- **Number of cities**: Number of cities that the Traveling Salesman must visit. This parameter lets us test how good the genetic engine is at optimizing the TSP for a very large amount of cities.
+- **Population size**: Number of solutions per generation.
+- **Random seed**: The city map is randomly generated every time the "Start" button is pressed. If this field is empty, then the map will be different every time. Any non-empty string will be used as the random seed, so using the same string will always result in the same map. This allows comparing executions of the engine on equal terms, while tuning other parameters.
+- **Elite size**: At the start of every new generation, the best members of the previous generation are copied to the new one. This parameter determines the amount of top solutions to be copied. This ensures that new generations will always yield a solution at least as good as their predecessor.
+- **Invert ratio**: When generating the offspring of a generation, pairs of solutions are combined together. This ratio determines the proportion of solutions sequences to be inverted before being combined.
+- **Weight exponent**: Relative weight of favoring the best individuals during selection. Lower values result in higher diversity but slower evolution.
+- **Parallelism**: Number of parallel Web Workers. Each Web Worker executes an independent genetic engine, and the UI selects the best solution among them to be displayed in the map. This allows us to exploit the multiple cores that modern CPUs provide, multiplying the amount of generations per second.
+- **Migration cadence**: Number of generations after which populations share the incumbent. When more than one Web Worker is used, the UI redistributes the best solution among the all the Web Workers periodically, which incorporate it as a member of their next generation.
+
 ## Building and testing
 This is a 100% client-side project. You can deploy the web folder anywhere you want and open it from your browser.
 - Run `npm run svr` to launch a development server in watch mode. You can then open http://localhost:8080 and play with the application.
@@ -35,6 +46,6 @@ This is a 100% client-side project. You can deploy the web folder anywhere you w
 ## ToDo
 - Look & feel
 	- Highlight the segments that changed in the map from previous solution
-	- Add *Evolution* section displaying progress of solution: 1pixel = 1 second
+	- Add *Histogram* section displaying progress of solution: 1pixel = 1 second ✔
 - Functionality
-	- Support parallel engines / recombine in client √
+	- Support parallel engines / recombine in client ✔
