@@ -4,12 +4,16 @@ import { TspWorkerStatus } from './tsp-worker'
 
 // ------------------------------ Drawing ------------------------------
 
+// Map consts
 const CITY_COLOR = '#343a40'
 const SEGMENT_COLOR = '#007bff'
 const CITY_SIZE = 3
 const SEGMENT_WIDTH = 1.2
+// Histogram consts
 const HISTOGRAM_BG_COLOR = '#dfefff'
+const HISTOGRAM_WIDTH = 640
 const HISTOGRAM_HEIGHT = 240
+const HISTOGRAM_WAIT = 2000
 
 type Point = {
 	x: number
@@ -80,7 +84,7 @@ let histogram: HistogramItem[] = []
 let histogramSec = 0
 
 function updateHistogram(status: TspWorkerStatus) {
-	if (status.elapsed < 2000) return
+	if (status.elapsed < HISTOGRAM_WAIT) return
 	histogram.push({
 		when: status.elapsed,
 		eval: status.incumbent.eval
@@ -96,13 +100,19 @@ function drawHistogram(elapsed: number) {
 	ctx.strokeStyle = SEGMENT_COLOR
 	ctx.fillStyle = HISTOGRAM_BG_COLOR
 	ctx.lineWidth = 1
+	// let tw = (elapsed - HISTOGRAM_WAIT) / 1000
+	// if (tw > HISTOGRAM_WIDTH)
+	// 	ctx.translate(HISTOGRAM_WIDTH - tw, 0)
+	let scaleX = HISTOGRAM_WIDTH * 1000 / (elapsed - HISTOGRAM_WAIT)
+	if (scaleX < 1)
+		ctx.scale(scaleX, 1)
 	ctx.fillRect(0, 0, sec + 0.5, HISTOGRAM_HEIGHT)
 	for (let item of histogram)
 		drawHistogramItem(ctx, item)
 }
 
 function drawHistogramItem(ctx: CanvasRenderingContext2D, item: HistogramItem) {
-	let w = item.when / 1000
+	let w = (item.when - HISTOGRAM_WAIT) / 1000
 	let h = HISTOGRAM_HEIGHT * item.eval / histogram[0].eval
 	ctx.beginPath()
 	ctx.moveTo(w, HISTOGRAM_HEIGHT)
