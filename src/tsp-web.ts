@@ -9,7 +9,6 @@ const SEGMENT_COLOR = '#007bff'
 const CITY_SIZE = 3
 const SEGMENT_WIDTH = 1.2
 const HISTOGRAM_BG_COLOR = '#dfefff'
-const HISTOGRAM_WIDTH = 640
 const HISTOGRAM_HEIGHT = 240
 
 type Point = {
