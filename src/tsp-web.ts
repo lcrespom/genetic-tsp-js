@@ -100,12 +100,9 @@ function drawHistogram(elapsed: number) {
 	ctx.strokeStyle = SEGMENT_COLOR
 	ctx.fillStyle = HISTOGRAM_BG_COLOR
 	ctx.lineWidth = 1
-	// let tw = (elapsed - HISTOGRAM_WAIT) / 1000
-	// if (tw > HISTOGRAM_WIDTH)
-	// 	ctx.translate(HISTOGRAM_WIDTH - tw, 0)
-	let scaleX = HISTOGRAM_WIDTH * 1000 / (elapsed - HISTOGRAM_WAIT)
-	if (scaleX < 1)
-		ctx.scale(scaleX, 1)
+	let width = (elapsed - HISTOGRAM_WAIT) / 1000
+	if (width > HISTOGRAM_WIDTH)
+		ctx.translate(HISTOGRAM_WIDTH - width, 0)
 	ctx.fillRect(0, 0, sec + 0.5, HISTOGRAM_HEIGHT)
 	for (let item of histogram)
 		drawHistogramItem(ctx, item)
