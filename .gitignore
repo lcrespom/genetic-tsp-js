@@ -1,5 +1,6 @@
 node_modules/
 js/
+coverage/
 npm-debug.log
 .DS_Store
 .vscode/

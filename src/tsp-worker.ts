@@ -13,8 +13,11 @@ export type TspWorkerStatus = {
 	incumbent: TspSolution
 }
 
-type WorkerPostMessage = (data: any) => void
-let wkPostMessage: WorkerPostMessage = <WorkerPostMessage>self.postMessage
+interface WebWorker extends Window {
+	postMessage(data: any): void
+}
+
+declare var self: WebWorker
 
 
 // -------------------- Worker scope --------------------
@@ -45,7 +48,7 @@ const engineListener = {
 	engineStep(pop: Population, genct: number) {
 		if (!checkElapsed(REFRESH_WAIT)) return
 		let now = Date.now()
-		wkPostMessage({
+		self.postMessage({
 			command: 'status',
 			status: getStatus(pop, genct, now)
 		})
@@ -83,7 +86,7 @@ function doStart(params: TspParams) {
 
 function doSteps(numSteps: number) {
 	tsp.steps(numSteps)
-	wkPostMessage({
+	self.postMessage({
 		command: 'steps',
 		incumbent: tsp.generation.getIncumbent()
 	})

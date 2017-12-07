@@ -23,7 +23,7 @@ type Point = {
 type Cities = Point[]
 
 
-function setupContext(canvasId): CanvasRenderingContext2D | null {
+function setupContext(canvasId: string): CanvasRenderingContext2D | null {
 	let canvas = <HTMLCanvasElement>document.getElementById(canvasId)
 	if (!canvas || !canvas.getContext)
 		return null
@@ -120,17 +120,17 @@ function drawHistogramItem(ctx: CanvasRenderingContext2D, item: HistogramItem) {
 
 // ------------------------------ Statistics ------------------------------
 
-function formatNum(nStr) {
-	let n = parseFloat(nStr)
+function formatNum(nStr: string | number): string {
+	let n = typeof nStr == 'string' ? parseFloat(nStr) : nStr
 	return n.toLocaleString()
 }
 
-function prepend0(num) {
+function prepend0(num: number) {
 	if (num < 10) return '0' + num
 	return num
 }
 
-function formatTime(t: number) {
+function formatTime(t: number): string {
 	let h, m, s
 	s = Math.round(t / 1000)
 	m = Math.floor(s / 60)
@@ -138,7 +138,7 @@ function formatTime(t: number) {
 	return '' + h + ':' + prepend0(m % 60) + ':' + prepend0(s % 60)
 }
 
-function updateStatistics(status: TspWorkerStatus) {
+function updateStatistics(status: TspWorkerStatus): void {
 	setText('status.generation', formatNum(status.generation))
 	setText('status.gps', formatNum(status.gps.toFixed(0)))
 	setText('status.eval', formatNum(Math.round(status.eval)))
@@ -213,7 +213,7 @@ function setupSlider(el: Element, registerClick: boolean) {
 	slider.style.maxHeight = ''	// Required to get the default offsetHeight
 	slider.style.maxHeight = '' + slider.offsetHeight + 'px'
 	if (!registerClick) return
-	toggle.addEventListener('click', _ =>
+	toggle.addEventListener('click', () =>
 		slider.classList.toggle('slider-closed')
 	)
 }

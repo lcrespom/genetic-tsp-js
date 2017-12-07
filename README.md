@@ -46,6 +46,6 @@ This is a 100% client-side project. You can deploy the web folder anywhere you w
 ## ToDo
 - Look & feel
 	- Highlight the segments that changed in the map from previous solution
-	- Add *Histogram* section displaying progress of solution: 1pixel = 1 second ✔
-- Functionality
-	- Support parallel engines / recombine in client ✔
+- Code
+	- Convert jest tests to TypeScript with ts-jest
+		(see https://github.com/JamesHenry/typescript-pro-library-project/blob/08-ensuring-code-coverage/package.json)

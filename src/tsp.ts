@@ -1,6 +1,6 @@
 import { Solution, EngineParams, Engine } from './engine'
 
-declare function require(name: string)
+declare function require(name: string): any
 const seedrandom = require('seedrandom')
 
 

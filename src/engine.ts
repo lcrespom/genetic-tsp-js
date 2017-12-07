@@ -104,7 +104,7 @@ export abstract class Engine {
 		this.params = params
 	}
 
-	start() {
+	start(): void {
 		this.generationCount = 0
 		this.generation = this.randomize()
 		this.generation.prepareForSelection()
@@ -117,7 +117,7 @@ export abstract class Engine {
 		}
 	}
 
-	steps(numSteps: number) {
+	steps(numSteps: number): void {
 		while (!this.stop && numSteps > 0) {
 			this.step()
 			numSteps--
@@ -128,7 +128,7 @@ export abstract class Engine {
 		this.listener = listener
 	}
 
-	abstract newSolution():  Solution
+	abstract newSolution(): Solution
 
 	// -------------------------- Privates --------------------------
 
